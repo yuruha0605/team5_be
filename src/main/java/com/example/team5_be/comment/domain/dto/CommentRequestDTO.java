@@ -15,13 +15,17 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CommentRequestDTO {
     private String content;
-    private Integer MissonId;
+    private String missonName;
+    private Integer missonId;
+
 
 
     public CommentEntity toEntity(MissonEntity misson) {
         return CommentEntity.builder()
                     .content(this.content)
+                    .name(misson.getName())
                     .misson(misson)
                     .build();
+    }
 
 }

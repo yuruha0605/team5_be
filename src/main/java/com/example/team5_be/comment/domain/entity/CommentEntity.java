@@ -26,10 +26,21 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId ; 
 
+    @Column(nullable = false , length = 150)
+    private String title;
+
     @Column(nullable = false , length = 500)
     private String content ; 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "missonId")
     private MissonEntity misson ;
+
+    
+
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

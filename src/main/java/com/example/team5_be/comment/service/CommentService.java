@@ -55,6 +55,18 @@ public class CommentService {
     }
 
 
+    @Transactional
+    public CommentResponseDTO update(Integer commentId, CommentRequestDTO request){
+        System.out.println(">>>> blog service update");  
+        CommentEntity comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new EntityNotFoundException("게시글 없음"));
+
+        comment.update(request.getMissonName(), request.getContent());
+        // save() 안 해도 됨 (Dirty Checking)
+        // blogRepository.save(blog) ;
+        
+        return CommentResponseDTO.fromEntityWithoutComments(comment);
+    }
     //고민
     private String getAuthEmail() {
         return SecurityContextHolder

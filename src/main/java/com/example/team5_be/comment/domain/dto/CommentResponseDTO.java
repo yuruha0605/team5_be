@@ -18,6 +18,14 @@ public class CommentResponseDTO {
     private String content;
     private Integer missonId;
 
+    public static CommentResponseDTO fromEntityWithoutComments(CommentEntity entity) {
+        return CommentResponseDTO.builder()
+                .commentId(entity.getCommentId())
+                .title(entity.getMisson())
+                .content(entity.getContent())
+                .build();
+    }
+
     public static CommentResponseDTO fromEntity(CommentEntity entity) {
         return CommentResponseDTO.builder()
                                 .commentId(entity.getCommentId())
