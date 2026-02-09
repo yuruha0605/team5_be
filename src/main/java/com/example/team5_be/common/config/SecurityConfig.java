@@ -50,13 +50,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) //Cross-Site Request Forgery(사이트 위변조)
-            .cors(Customizer.withDefaults())    
+            .cors(Customizer.withDefaults()) 
+            .logout(logout -> logout.disable())   
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
             "/swagger-ui/**",
                         "/v3/api-docs/**",
-                        "/users/signUp",
-                        "/users/signIn",
+                        "/user/signup",
+                        "/user/signin",
                         "/openai/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

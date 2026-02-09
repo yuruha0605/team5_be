@@ -3,6 +3,7 @@ package com.example.team5_be.common.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -18,16 +19,16 @@ public class SwaggerConfig {
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER)
                 .name("Authorization") ;
         
                 //Security Requiremenmt
                 SecurityRequirement securityRequirement = new SecurityRequirement()
                     .addList("BearerAuth");
 
-        return new OpenAPI()
-                    .addSecurityItem(securityRequirement)
-                    .schemaRequirement("BearerAuth", securityScheme);
+         return new OpenAPI()
+                .components(new Components()
+                        .addSecuritySchemes("BearerAuth", securityScheme))
+                .addSecurityItem(securityRequirement);
         
     }
 }
