@@ -25,6 +25,35 @@ repositories {
 }
 
 dependencies {
+	// .env 이용해서 보안이 필요한 정보를 로컬에 저장하고 git hub에 공유하지 않겠다는 목적
+ 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
+	// swagger api + springboot 3.x대 지원
+	// GlobalException verision 이슈 -> 2.7.0 / 3.1.0
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+	// jwt token lib
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	//redis lib
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// invalidation
+	// JSR - 303 표준
+	// dto 데이터 유효성 체크를 도와주는 lib
+	implementation group: 'org.springframework.boot', name : 'spring-boot-starter-validation'
+
+	//ai lib
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	//json lib
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
