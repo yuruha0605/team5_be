@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Many;
 
+import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.domain.entity.StatusEntity;
