@@ -12,31 +12,34 @@ import com.example.team5_be.comment.dao.CommentRepository;
 import com.example.team5_be.comment.domain.dto.CommentRequestDTO;
 import com.example.team5_be.comment.domain.dto.CommentResponseDTO;
 import com.example.team5_be.comment.domain.entity.CommentEntity;
+import com.example.team5_be.mission.dao.MissionRepository;
+import com.example.team5_be.mission.domain.entity.MissionEntity;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentService {
     
     //의존성 주임
-    private final MissonRepository missonRepository;
+    private final MissionRepository missionRepository;
     private final CommentRepository commentRepository;
 
     @Transactional
     public List<CommentResponseDTO> write(CommentRequestDTO request){
-        System.out.println(">>>> misson/comment service write");        //디버그
+        System.out.println(">>>> mission/comment service write");        //디버그
         
         List<CommentResponseDTO> list = null ;
         
-        MissonEntity misson = missonRepository.findById(request.getMissonId())
-            .orElseThrow(() -> new EntityNotFoundException("Misson not found : " + request.getMissonId()));
+        MissionEntity mission = missionRepository.findById(request.getMissionId())
+            .orElseThrow(() -> new EntityNotFoundException("Mission not found : " + request.getMissionId()));
 
-        commentRepository.save(request.toEntity(misson));
+        commentRepository.save(request.toEntity(mission));
 
 
-        return commentRepository.findByMisson_MissonId(request.getMissonId())
+        return commentRepository.findByMission_MissionId(request.getMissionId())
                 .stream()
                 .map(CommentResponseDTO::fromEntity)
                 .toList();
@@ -47,7 +50,7 @@ public class CommentService {
 
     @Transactional
     public void delete(Integer commentId) {
-        System.out.println(">>>> misson/comment service delete");
+        System.out.println(">>>> mission/comment service delete");
         CommentEntity comment = commentRepository.findById(commentId)
                                 .orElseThrow(() ->  
                                     new EntityNotFoundException("댓글 없음 : " + commentId));
@@ -57,11 +60,11 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDTO update(Integer commentId, CommentRequestDTO request){
-        System.out.println(">>>> blog service update");  
+        System.out.println(">>>> comment service update");  
         CommentEntity comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new EntityNotFoundException("게시글 없음"));
 
-        comment.update(request.getMissonName(), request.getContent());
+        comment.update(request.getMissionName(), request.getContent());
         // save() 안 해도 됨 (Dirty Checking)
         // blogRepository.save(blog) ;
         

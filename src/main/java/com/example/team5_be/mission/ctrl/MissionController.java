@@ -60,24 +60,24 @@ public class MissionController {
 
     // 미션 수정
     @PutMapping("/update/{missionId}")
-    public ResponseEntity<Void> update(@PathVariable("missionId") Integer missionId, @RequestBody MissionRequestDTO request) {
+    public ResponseEntity<MissionResponseDTO> update(@PathVariable("missionId") Integer missionId, @RequestBody MissionRequestDTO request) {
         System.out.println(">>>> mission ctrl update check");
 
-        int flag = missionService.update(missionId, request);
+        MissionResponseDTO response = missionService.update(missionId, request);
 
-        if(flag != 0)   return ResponseEntity.status(HttpStatus.OK).body(null);             // 200
-        else            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);    // 400
+        if(response != null)    return ResponseEntity.status(HttpStatus.OK).body(response);             // 200
+        else                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);    // 400
     }
 
 
     // 미션 삭제
     @PostMapping("/delete/{missionId}") 
-    public ResponseEntity<Void> delete(@PathVariable("missionId") Integer missionId) {
+    public ResponseEntity<Boolean> delete(@PathVariable("missionId") Integer missionId) {
         System.out.println(">>>> mission ctrl delete check");
 
-        int flag = missionService.delete(missionId);
-        if(flag != 0)   return new ResponseEntity<>(HttpStatus.NO_CONTENT);     // 204
-        else            return new ResponseEntity<>(HttpStatus.NOT_FOUND);      // 404
+        Boolean flag = missionService.delete(missionId);
+        if(flag)   return new ResponseEntity<>(HttpStatus.NO_CONTENT);     // 204
+        else       return new ResponseEntity<>(HttpStatus.NOT_FOUND);      // 404
     }
     
 }

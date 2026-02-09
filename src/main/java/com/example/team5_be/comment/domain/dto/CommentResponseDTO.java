@@ -16,12 +16,12 @@ import lombok.ToString;
 public class CommentResponseDTO {
     private Integer commentId;
     private String content;
-    private Integer missonId;
+    private Integer missionId;
 
     public static CommentResponseDTO fromEntityWithoutComments(CommentEntity entity) {
         return CommentResponseDTO.builder()
                 .commentId(entity.getCommentId())
-                .title(entity.getMisson())
+                .title(entity.getMission())
                 .content(entity.getContent())
                 .build();
     }
@@ -30,7 +30,7 @@ public class CommentResponseDTO {
         return CommentResponseDTO.builder()
                                 .commentId(entity.getCommentId())
                                 .content(entity.getContent())
-                                .missonId(entity.getMisson().getMissonId())
+                                .missionId(entity.getMission().getMissionId())
                                 .build();
     }
 }

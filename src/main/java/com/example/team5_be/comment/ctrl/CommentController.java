@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.team5_be.comment.domain.dto.CommentRequestDTO;
 import com.example.team5_be.comment.domain.dto.CommentResponseDTO;
 import com.example.team5_be.comment.service.CommentService;
+import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
+import com.example.team5_be.mission.service.MissionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,11 +34,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("misson/{missonId}/comment")
-@Tag(name = "Misson Comments API" ,  description = "Misson 댓글관련 API 명세서")
+@RequestMapping("mission/{missionId}/comment")
+@Tag(name = "Mission Comments API" ,  description = "Mission 댓글관련 API 명세서")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+    private final MissionService missionService ;
 
     @ApiResponses(
         {
@@ -51,15 +54,15 @@ public class CommentController {
         summary = "미션 댓글 조회",
         description = "미션 아이디를 이용한 단건 조회"
     )
-    @GetMapping("/misson/{id}/comment")
+    @GetMapping("/mission/{id}/comment")
     public ResponseEntity<CommentResponseDTO> read( 
-        @Parameter(description = "Misson ID" , example = "1") 
-        @PathVariable("missonId") Integer missonId) {
+        @Parameter(description = "mission ID" , example = "1") 
+        @PathVariable("missionId") Integer missionId) {
 
-        System.out.println(">>>> misson ctrl path : /read"); 
-        System.out.println(">>>> params missonId : "+ missonId); 
+        System.out.println(">>>> Mission ctrl path : /read"); 
+        System.out.println(">>>> params missionId : "+ missionId); 
 
-        MissonResponseDTO response = missonService.read(missonId) ;
+        MissionResponseDTO response = missionService.read(missionId) ;
         if( response != null) {
             return new ResponseEntity<>(response, HttpStatus.OK); // 200
         }else {
@@ -88,7 +91,7 @@ public class CommentController {
         ))
         @RequestBody CommentRequestDTO request) {
 
-        System.out.println(">>>> misson / comment  ctrl path : /write"); 
+        System.out.println(">>>> mission / comment  ctrl path : /write"); 
         System.out.println(">>>> params : "+ request); 
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -99,7 +102,7 @@ public class CommentController {
 
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<Void> delete(@PathVariable("commentId") Integer commentId) {
-        System.out.println(">>>> misson / comment  ctrl path : /delete"); 
+        System.out.println(">>>> mission / comment  ctrl path : /delete"); 
         System.out.println(">>>> params : "+ commentId); 
 
         commentService.delete(commentId); 

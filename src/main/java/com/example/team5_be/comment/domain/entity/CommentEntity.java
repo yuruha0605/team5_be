@@ -1,5 +1,7 @@
 package com.example.team5_be.comment.domain.entity;
 
+import com.example.team5_be.mission.domain.entity.MissionEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,8 +35,8 @@ public class CommentEntity {
     private String content ; 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "missonId")
-    private MissonEntity misson ;
+    @JoinColumn(name = "missionId")
+    private MissionEntity mission ;
 
     
 
