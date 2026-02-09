@@ -13,3 +13,9 @@
 ## 백엔드
 - 권도희
 - 정소연
+
+
+## 20260209
+## 1:50pm
+resourse dev.yml, app.yml 설정
+.propertise 제거
