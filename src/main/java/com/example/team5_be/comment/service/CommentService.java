@@ -33,7 +33,6 @@ public class CommentService {
     public List<CommentResponseDTO> write(Integer missonId, CommentRequestDTO request){
         System.out.println(">>>> mission/comment service write");        //디버그
         
-        List<CommentResponseDTO> list = null ;
         
         MissionEntity mission = missionRepository.findById(missonId)
             .orElseThrow(() -> new EntityNotFoundException("Mission not found"));
