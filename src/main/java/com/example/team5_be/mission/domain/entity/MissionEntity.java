@@ -59,7 +59,6 @@ public class MissionEntity {
     @Column(name = "mission_definition", nullable = false, length = 500)
     private String missionDefinition;
 
-
     @Column(name = "mission_start_date", nullable = false)
     private LocalDate missionStartDate;
 

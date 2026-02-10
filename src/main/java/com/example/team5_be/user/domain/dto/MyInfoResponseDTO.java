@@ -13,15 +13,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MyPageResponseDTO {
+public class MyInfoResponseDTO {
     private String userId;
     private String userName;
     private Boolean profilePublic;
     private String userJob;
     private String userInterest;
 
-    public static MyPageResponseDTO from(UserEntity user) {
-        return MyPageResponseDTO.builder()
+    public static MyInfoResponseDTO from(UserEntity user) {
+        return MyInfoResponseDTO.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .profilePublic(user.getProfilePublic())
