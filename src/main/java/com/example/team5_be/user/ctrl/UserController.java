@@ -20,11 +20,6 @@ import com.example.team5_be.user.domain.dto.UserResponseDTO;
 import com.example.team5_be.user.domain.entity.UserEntity;
 import com.example.team5_be.user.service.UserService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import lombok.RequiredArgsConstructor;
