@@ -8,14 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
 import com.example.team5_be.dashboard.domain.entity.TrophyEntity;
 
-public interface DashBoardTrophyRepository
-        extends JpaRepository<TrophyEntity, Long> {
+public interface DashBoardTrophyRepository extends JpaRepository<TrophyEntity, Long> {
 
     @Query("""
         select new com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO(
             0, tr.user.userId, tr.user.userName, null, count(tr.id)
         )
-        from TrophyRelationshipEntity tr
+        from TrophyEntity tr
         group by tr.user.userId, tr.user.userName
         order by count(tr.id) desc
     """)

@@ -12,10 +12,10 @@ public interface DashBoardRepository extends JpaRepository<DashBoardEntity, Stri
 
     @Query("""
         select new com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO(
-            0, u.userId, u.userName, u.totalScore, null
+            0, d.userId, d.userName, d.totalScore, null
         )
-        from UserEntity u
-        order by u.totalScore desc
+        from DashBoardEntity d
+        order by d.totalScore desc
     """)
     List<DashBoardRowDTO> findRankingByTotalScore();
 }
