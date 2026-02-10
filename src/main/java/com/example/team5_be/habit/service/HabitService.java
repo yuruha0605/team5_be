@@ -181,7 +181,8 @@ public class HabitService {
                 .orElseThrow(() -> new EntityNotFoundException("Join relationship not found"));
 
         StatusEntity newStatus = findStatusEntityByEnum(req.getStatus());
-        rel.setStatus(newStatus);
+        rel.changeStatus(newStatus);
+
 
         return HabitJoinResponseDTO.builder()
                 .habitId(habitId)
