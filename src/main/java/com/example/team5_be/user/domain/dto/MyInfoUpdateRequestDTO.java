@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyPageUpdateRequestDTO {
-              
+public class MyInfoUpdateRequestDTO {
+    
     private String userPassword;     
     private String userName ;
     private Boolean profilePublic;

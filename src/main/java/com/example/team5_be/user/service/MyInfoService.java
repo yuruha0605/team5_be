@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.team5_be.user.dao.UserRepository;
-import com.example.team5_be.user.domain.dto.MyPageResponseDTO;
-import com.example.team5_be.user.domain.dto.MyPageUpdateRequestDTO;
+import com.example.team5_be.user.domain.dto.MyInfoResponseDTO;
+import com.example.team5_be.user.domain.dto.MyInfoUpdateRequestDTO;
 import com.example.team5_be.user.domain.entity.UserEntity;
 
 import jakarta.transaction.Transactional;
@@ -13,20 +13,20 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MyPageService {
+public class MyInfoService {
     
     private final UserRepository userRepository ;
     private final PasswordEncoder passwordEncoder;
 
-    public MyPageResponseDTO getMyPage(String userId) {
+    public MyInfoResponseDTO getMyPage(String userId) {
     UserEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-    return MyPageResponseDTO.from(user);
+    return MyInfoResponseDTO.from(user);
     }
 
     @Transactional
-    public MyPageResponseDTO updateMyPage(String userId, MyPageUpdateRequestDTO dto) {
+    public MyInfoResponseDTO updateMyPage(String userId, MyInfoUpdateRequestDTO dto) {
     
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
@@ -43,8 +43,6 @@ public class MyPageService {
 
         userRepository.save(user);
 
-        return MyPageResponseDTO.from(user);
+        return MyInfoResponseDTO.from(user);
     }
-
-
 }

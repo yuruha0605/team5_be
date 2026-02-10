@@ -2,6 +2,8 @@ package com.example.team5_be.trophy.domain.entity;
 
 import java.util.List;
 
+import com.example.team5_be.habit.domain.entity.HabitEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

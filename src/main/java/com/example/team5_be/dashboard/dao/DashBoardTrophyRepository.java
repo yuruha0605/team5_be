@@ -1,22 +1,22 @@
-package com.example.team5_be.dashboard.dao;
+// package com.example.team5_be.dashboard.dao;
 
-import java.util.List;
+// import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+// import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.Query;
 
-import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
-import com.example.team5_be.dashboard.domain.entity.TrophyEntity;
+// import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
+// import com.example.team5_be.dashboard.domain.entity.TrophyEntity;
 
-public interface DashBoardTrophyRepository extends JpaRepository<TrophyEntity, Long> {
+// public interface DashBoardTrophyRepository extends JpaRepository<TrophyEntity, Long> {
 
-    @Query("""
-        select new com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO(
-            0, tr.user.userId, tr.user.userName, null, count(tr.id)
-        )
-        from TrophyEntity tr
-        group by tr.user.userId, tr.user.userName
-        order by count(tr.id) desc
-    """)
-    List<DashBoardRowDTO> findRankingByTrophyCount();
-}
+//     @Query("""
+//         select new com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO(
+//             0, tr.user.userId, tr.user.userName, null, count(tr.id)
+//         )
+//         from TrophyEntity tr
+//         group by tr.user.userId, tr.user.userName
+//         order by count(tr.id) desc
+//     """)
+//     List<DashBoardRowDTO> findRankingByTrophyCount();
+// }

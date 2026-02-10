@@ -1,37 +1,37 @@
-package com.example.team5_be.dashboard.domain.entity;
+// package com.example.team5_be.dashboard.domain.entity;
 
-import com.example.team5_be.user.domain.entity.UserEntity;
+// import com.example.team5_be.user.domain.entity.UserEntity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+// import jakarta.persistence.Column;
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.FetchType;
+// import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GenerationType;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.ManyToOne;
+// import jakarta.persistence.Table;
+// import lombok.AllArgsConstructor;
+// import lombok.Builder;
+// import lombok.Getter;
+// import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "trophy_relationship")
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class TrophyEntity {
+// @Entity
+// @Table(name = "trophy_relationship")
+// @Getter
+// @NoArgsConstructor
+// @AllArgsConstructor
+// @Builder
+// public class TrophyEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     private Long id; 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+//     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//     @JoinColumn(name = "user_id")
+//     private UserEntity user;
 
-    @Column(name = "trophy_id", nullable = false)
-    private Long trophyId;
-}
+//     @Column(name = "trophy_id", nullable = false)
+//     private Long trophyId;
+// }

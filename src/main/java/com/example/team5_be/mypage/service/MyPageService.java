@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.team5_be.habit.domain.entity.HabitEntity;
+import com.example.team5_be.habit.domain.entity.TagEntity;
 import com.example.team5_be.mission.dao.MissionRepository;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.mypage.dao.MyPageRepository;

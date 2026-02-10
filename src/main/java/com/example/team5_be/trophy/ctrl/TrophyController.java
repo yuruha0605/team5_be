@@ -28,7 +28,7 @@ public class TrophyController {
     @PostMapping("/award/{habitId}")
     public ResponseEntity<String> awardTrophy(@PathVariable Long habitId,
                                           @AuthenticationPrincipal String userId) {
-        boolean awarded = trophyService.awardTrophy(Long.valueOf(userId), habitId);
+        boolean awarded = trophyService.awardTrophy(userId, habitId);
         if (awarded) {
             return ResponseEntity.ok("Trophy awarded!");
         } else {

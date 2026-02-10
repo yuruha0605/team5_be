@@ -7,13 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.team5_be.habit.dao.HabitRelationshipRepository;
+import com.example.team5_be.habit.domain.entity.HabitEntity;
+import com.example.team5_be.habit.domain.entity.HabitRelationshipEntity;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 import com.example.team5_be.trophy.dao.TrophyRepository;
 import com.example.team5_be.trophy.domain.dto.TrophyDTO;
 import com.example.team5_be.trophy.domain.entity.TrophyEntity;
 import com.example.team5_be.trophy.domain.entity.TrophyRelationshipEntity;
-import com.example.team5_be.user.domain.entity.HabitRelationshipEntity;
 import com.example.team5_be.user.domain.entity.UserEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -28,13 +30,13 @@ public class TrophyService {
 
     // 미션 완료 시 트로피 지급 (트로피를 DB에 새로 생성)
     @Transactional
-    public boolean awardTrophy(Long userId, Long habitId) {
+    public boolean awardTrophy(String userId, Long habitId) {
         // 1. HabitRelationship 조회
-        HabitRelationshipEntity hr = habitRelRepo.findByUserIdAndHabitId(userId, habitId)
+        HabitRelationshipEntity hr = habitRelRepo.findById_UserIdAndId_HabitId(userId, habitId)
                 .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
 
         // 2. 완료 여부 확인
-        if (!hr.getStatus().getName().equals("COMPLETED")) {
+        if (!hr.getStatus().getStatusName().equals("COMPLETED")) {
             return false; // 완료 X → 트로피 지급 안함
         }
 
@@ -80,7 +82,6 @@ public class TrophyService {
                             .trophyName(trophy.getTrophyName())
                             .habitId(habit.getHabitId())
                             .habitName(habit.getHabitName())
-                            .trophyScore(trophy.getTrophyScore())
                             .build();
                 })
                 .collect(Collectors.toList());
