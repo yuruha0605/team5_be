@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity 
-@Table(name = "MEMBER") 
+@Table(name = "USER_TBL") 
 @Builder
 @Getter
 @Setter
@@ -27,19 +27,19 @@ import lombok.Setter;
 public class UserEntity {
     
     @Id
-    @Column(name = "MEMBER_ID", unique = true, nullable = false)
+    @Column(name = "USER_ID", unique = true, nullable = false)
     private String userId ;
 
-    @Column(name = "MEMBER_PASSWORD", unique = true, nullable = false, length = 200)
+    @Column(name = "USER_PASSWORD", unique = true, nullable = false, length = 200)
     private String userPassword ;
 
-    @Column(name = "MEMBER_NAME", nullable = false)
+    @Column(name = "USER_NAME", nullable = false)
     private String userName ;
 
-    @Column(name = "MEMBER_JOB", nullable = true)
+    @Column(name = "USER_JOB", nullable = true)
     private String userJob ;
 
-    @Column(name = "MEMBER_INTEREST", nullable = true)
+    @Column(name = "USER_INTEREST", nullable = true)
     private String userInterest ; 
 
     @Column(name = "PROFILE_PUBLIC", nullable = false)

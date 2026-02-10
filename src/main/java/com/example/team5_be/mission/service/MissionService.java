@@ -92,11 +92,11 @@ public class MissionService {
         return response ;
     }
 
-    // 모든 미션 조회
+    // 한 유저의 모든 미션 조회
     @Transactional
-    public List<MissionResponseDTO> list() {
+    public List<MissionResponseDTO> list(String userId) {
         System.out.println(">>>> Entered mission service : list");
-        List<MissionEntity> entities = missionRepository.findAll();
+        List<MissionEntity> entities = missionRepository.findByUser_UserId(userId);
         
         List<MissionResponseDTO> responses = entities.stream()
                                                 .map(MissionResponseDTO::fromEntity)

@@ -40,11 +40,11 @@ public class MissionLogService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid missionId: " + request.getMissionId()));
 
         MissionLogEntity entity = missionLogRepository
-                .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
-                .orElseGet(() -> MissionLogEntity.builder()
-                        .mission(mission)
-                        .checkDate(request.getCheckDate())
-                        .build());
+                                    .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
+                                    .orElseGet(() -> MissionLogEntity.builder()
+                                    .mission(mission)
+                                    .checkDate(request.getCheckDate())
+                                    .build());
 
         entity.setIsChecked(request.getIsChecked());
 
@@ -85,7 +85,7 @@ public class MissionLogService {
     }
 
 
-    
+
     public DailyMissionListResponseDTO getDailyMissions(String userId, LocalDate date) {
         List<MissionEntity> missions = missionRepository
                 .findByUser_UserIdAndMissionStartDateLessThanEqualAndMissionEndDateGreaterThanEqual(userId, date, date);
