@@ -3,8 +3,11 @@ package com.example.team5_be.user.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.trophy.domain.entity.TrophyRelationshipEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -52,8 +55,22 @@ public class UserEntity {
         }
     }
 
-    @OneToMany(mappedBy = "user", orphanRemoval = false)
+
+    // 1:N Mission
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionEntity> missions = new ArrayList<>();
+
+    // 1:N Comment
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments = new ArrayList<>();
+
+    // Habit과 ManyToMany 연결 (중간 테이블 HabitRelationship 사용)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HabitRelationshipEntity> habits = new ArrayList<>();
+
+    // Trophy와 ManyToMany 연결 (중간 테이블 TrophyRelationship 사용)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrophyRelationshipEntity> trophies = new ArrayList<>();
 
 
 }

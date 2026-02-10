@@ -136,5 +136,11 @@ public class MissionService {
         
         return true ;
     }
+
+    @Transactional
+    public MissionEntity findById(Integer missionId) {
+        return missionRepository.findById(missionId)
+                .orElseThrow(() -> new RuntimeException("Mission not found"));
+    }
     
 }
