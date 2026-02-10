@@ -70,7 +70,7 @@ public class CommentController {
 
     @ApiResponses(
         {
-            @ApiResponse(responseCode="404" , description="데이터 입력 성공"),
+            @ApiResponse(responseCode="200" , description="데이터 입력 성공"),
             @ApiResponse(responseCode="400" , description="잘못된 요청")
         }
     )

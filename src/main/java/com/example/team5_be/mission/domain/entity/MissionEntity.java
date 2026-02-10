@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Many;
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
@@ -26,7 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Entity
 @Table(name = "MISSION_TBL")
@@ -67,22 +66,22 @@ public class MissionEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "habitId", nullable = false)
-    private HabitEntity habit;
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JoinColumn(name = "habitId", nullable = false)
+    // private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "modeId", nullable = false)
+    @JoinColumn(name = "mode_id", nullable = false)
     private ModeEntity mode;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "levelId", nullable = false)
+    @JoinColumn(name = "level_id", nullable = false)
     private LevelEntity level;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "statusId", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 
 

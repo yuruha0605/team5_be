@@ -31,10 +31,14 @@ public class MissionRequestDTO {
     
 
 
-    public MissionEntity toEntity(UserEntity user, HabitEntity habit, ModeEntity mode, LevelEntity level, StatusEntity status) {
+    public MissionEntity toEntity(  UserEntity user,
+                                    //HabitEntity habit, 
+                                    ModeEntity mode, 
+                                    LevelEntity level, 
+                                    StatusEntity status) {
         return MissionEntity.builder()
                 .user(user)
-                .habit(habit)
+                //.habit(habit)
                 .mode(mode)
                 .level(level)
                 .status(status)

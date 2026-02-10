@@ -28,7 +28,7 @@ public class MissionResponseDTO {
         return MissionResponseDTO.builder()
                 .missionId(entity.getMissionId())
                 .userName(entity.getUser().getUserName())
-                .habitName(entity.getHabit().getHabitName())
+                //.habitName(entity.getHabit().getHabitName())
                 .modeName(entity.getMode().getModeName())
                 .levelName(entity.getLevel().getLevelName())
                 .statusName(entity.getStatus().getStatusName())
