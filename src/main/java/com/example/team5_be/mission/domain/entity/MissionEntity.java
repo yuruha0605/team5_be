@@ -90,8 +90,5 @@ public class MissionEntity {
     @OneToMany(mappedBy = "mission", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
-
-
-    
     
 }

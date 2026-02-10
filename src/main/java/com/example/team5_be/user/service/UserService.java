@@ -11,10 +11,12 @@ import com.example.team5_be.common.exception.DuplicateUserIdException;
 import com.example.team5_be.common.service.RefreshTokenService;
 import com.example.team5_be.common.util.JwtProvider;
 import com.example.team5_be.user.dao.UserRepository;
+import com.example.team5_be.user.domain.dto.UserPublicDTO;
 import com.example.team5_be.user.domain.dto.UserRequestDTO;
 import com.example.team5_be.user.domain.dto.UserResponseDTO;
 import com.example.team5_be.user.domain.entity.UserEntity;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,9 +30,10 @@ public class UserService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
-    // passwordEncoder 의존성 주입
+    // passwordEncoder 의존성 주입, 해싱
     private final PasswordEncoder passwordEncoder;
 
+    // 회원가입 
     public UserResponseDTO join(UserRequestDTO request) {
         System.out.println(">>> user service signup");
 
@@ -44,6 +47,7 @@ public class UserService {
         return UserResponseDTO.fromEntity(user);
     }
 
+    // 로그인
     public Map<String, Object> login(UserRequestDTO request) {
         System.out.println(">>> user service signin");
         Map<String, Object> map = new HashMap<>();
@@ -72,6 +76,7 @@ public class UserService {
         return map ;
     }
 
+    //로그아웃
     public void logout(String accessToken) {
         System.out.println(">>>> user service logout");
         String id = jwtProvider.getUserIdFromToken(accessToken);
@@ -86,6 +91,7 @@ public class UserService {
     }
     }
 
+    //회원탈퇴
     public void withdraw(String userId) {
         UserEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -93,5 +99,45 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    //userId로 찾기
+    public UserEntity findById(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+    }
+
+    /////아이디랑 이름으로 회원조회 하고 비밀번호 변경
+    public UserEntity findUserByIdAndName(String userId, String userName) {
+        return userRepository.findByUserIdAndUserName(userId, userName)
+                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public void updatePassword(UserEntity user, String newPassword) {
+        user.setUserPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public UserPublicDTO getPublicProfile(String targetUserId, String viewerId) {
+        UserEntity targetUser = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 본인이라면 전체 정보 제공
+        if(targetUserId.equals(viewerId)) {
+            return UserPublicDTO.fromEntity(targetUser);
+        }
+
+        // 공개 상태면 전체 정보 제공
+        if(Boolean.TRUE.equals(targetUser.getProfilePublic())) {
+            return UserPublicDTO.fromEntity(targetUser);
+        }
+
+        // 비공개 상태면 제한된 정보
+        return UserPublicDTO.builder()
+                .userId(targetUser.getUserId())
+                .userName("비공개")
+                .userJob(null)
+                .userInterest(null)
+                .build();
+    }
 }
        
