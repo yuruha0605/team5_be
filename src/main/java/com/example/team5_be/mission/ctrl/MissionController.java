@@ -51,11 +51,11 @@ public class MissionController {
 
 
     // 모든 미션 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<MissionResponseDTO>> list() {
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<List<MissionResponseDTO>> list(@PathVariable("userId") String userId) {
         System.out.println(">>>> mission ctrl list check");
 
-        return ResponseEntity.status(HttpStatus.OK).body(missionService.list());
+        return ResponseEntity.status(HttpStatus.OK).body(missionService.list(userId));
     }
 
 

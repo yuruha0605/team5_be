@@ -20,7 +20,7 @@ import lombok.ToString;
 public class MissionRequestDTO {
 
     // 미션 생성에 필요한 필드들
-    private Integer userId;
+    private String userId;
     private Integer habitId;
     private Integer modeId;
     private Integer levelId;
