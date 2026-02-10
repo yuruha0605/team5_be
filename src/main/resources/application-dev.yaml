@@ -9,16 +9,16 @@ spring :
     # mariadb 설정        
     datasource:
         driver-class-name: org.mariadb.jdbc.Driver
-        url: jdbc:mariadb://localhost:3306/inspire
+        url: jdbc:mariadb://localhost:3306/trackbit_5
         username: root
-        password: 123456789
+        password: myky0226@
     #들여쓰기 잘 맞춰야 함
     jpa:
       hibernate: 
         # create, create-drop, update, none create하면 서버재기동할 때마다 새로 테이블 만들어지면서 데이터 날라감, 한 번 만들고 나면 none으로 바꾸기
-        ddl-auto: create
+        ddl-auto: none
       # 콘솔출력
-      show-sql: true     
+      show-sql: false     
       properties:
         hibernate:
           # h2

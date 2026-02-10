@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.team5_be.dashboard.dao.DashBoardRepository;
-import com.example.team5_be.dashboard.dao.DashBoardTrophyRepository;
+import com.example.team5_be.dashboard.dao.TrophyRealtionshipRepository;
 import com.example.team5_be.dashboard.domain.dto.DashBoardResponseDTO;
 import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class DashBoardService {
 
     private final DashBoardRepository dashboardRepository;
-    private final DashBoardTrophyRepository trophyRepository;
+    private final TrophyRealtionshipRepository trophyRepository;
 
     public DashBoardResponseDTO getRankings(String sort, Integer limit, Integer offset) {
 

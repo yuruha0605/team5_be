@@ -58,6 +58,8 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/user/signup",
                         "/user/signin",
+                        "/comments/**",
+                        "/bashoard/**",
                         "/openai/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

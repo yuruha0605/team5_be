@@ -2,7 +2,6 @@ package com.example.team5_be.dashboard.domain.entity;
 
 import com.example.team5_be.user.domain.entity.UserEntity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -11,18 +10,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "trophy_relationship") // ✅ 실제 테이블명으로 수정
-@Getter
+@Table(name = "trophy_relationship",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","trophy_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrophyEntity {
+public class TrophyRelationshipEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +31,7 @@ public class TrophyEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @Column(name = "trophy_id", nullable = false)
-    private Long trophyId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "trophy_id")
+    private TrophyRelationshipEntity trophy;
 }
