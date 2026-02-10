@@ -2,6 +2,7 @@ package com.example.team5_be.comment.domain.dto;
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.user.domain.entity.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,17 +16,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequestDTO {
+    private String title;
     private String content;
-    private String missionName;
-    private Integer missionId;
 
 
 
-    public CommentEntity toEntity(MissionEntity mission) {
+    public CommentEntity toEntity(MissionEntity mission, UserEntity user) {
         return CommentEntity.builder()
-                    .content(this.content)
-                    .missionName(mission.getMissionName())
+                    .title(title)
+                    .content(content)
                     .mission(mission)
+                    .user(user)
                     .build();
     }
 

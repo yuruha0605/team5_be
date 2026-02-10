@@ -2,8 +2,6 @@ package com.example.team5_be.comment.ctrl;
 
 import java.util.List;
 
-import javax.xml.stream.events.Comment;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.team5_be.comment.domain.dto.CommentRequestDTO;
 import com.example.team5_be.comment.domain.dto.CommentResponseDTO;
 import com.example.team5_be.comment.service.CommentService;
-import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
-import com.example.team5_be.mission.service.MissionService;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,12 +31,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("mission/{missionId}/comment")
+@RequestMapping("/comments")
 @Tag(name = "Mission Comments API" ,  description = "Mission 댓글관련 API 명세서")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final MissionService missionService ;
+
 
     @ApiResponses(
         {
@@ -52,17 +49,17 @@ public class CommentController {
     )
     @Operation(
         summary = "미션 댓글 조회",
-        description = "미션 아이디를 이용한 단건 조회"
+        description = "미션 아이디를 이용한 조회"
     )
-    @GetMapping("/mission/{id}/comment")
-    public ResponseEntity<CommentResponseDTO> read( 
+    @GetMapping("/mission/{missionId}/comment")
+    public ResponseEntity<List<CommentResponseDTO>> read( 
         @Parameter(description = "mission ID" , example = "1") 
         @PathVariable("missionId") Integer missionId) {
 
         System.out.println(">>>> Mission ctrl path : /read"); 
         System.out.println(">>>> params missionId : "+ missionId); 
 
-        MissionResponseDTO response = missionService.read(missionId) ;
+        List<CommentResponseDTO> response = commentService.read(missionId) ;
         if( response != null) {
             return new ResponseEntity<>(response, HttpStatus.OK); // 200
         }else {
@@ -81,7 +78,7 @@ public class CommentController {
         summary = "특정 미션에 댓글 작성",
         description = "댓글을 신규로 작성한다(content, commentId)"
     )
-    @PostMapping("/comments/{id}/comments/create")
+    @PostMapping("/mission/{missionId}/comments/create")
     public ResponseEntity<List<CommentResponseDTO>> write(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "미션 댓글 작성 요청 DTO",
@@ -89,13 +86,14 @@ public class CommentController {
         content = @Content(
             schema = @Schema(implementation = CommentRequestDTO.class)
         ))
+        @PathVariable Integer missionId,
         @RequestBody CommentRequestDTO request) {
 
         System.out.println(">>>> mission / comment  ctrl path : /write"); 
         System.out.println(">>>> params : "+ request); 
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(commentService.write(request)) ; 
+                .body(commentService.write(missionId, request)) ; 
         
     }
 
@@ -110,7 +108,7 @@ public class CommentController {
 
     }
 
-    @PutMapping("/comments/update/{commendId}")
+    @PutMapping("/update/{commentId}")
     public ResponseEntity<Void> update( 
         @Parameter(description = "댓글 ID" , example = "1") 
         @PathVariable("commentId") Integer commentId, 
