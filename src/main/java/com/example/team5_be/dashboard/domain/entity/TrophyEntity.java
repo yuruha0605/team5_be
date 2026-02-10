@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "trophy_relationship") // ✅ 실제 테이블명으로 수정
+@Table(name = "trophy_relationship")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

@@ -27,22 +27,22 @@ import lombok.Setter;
 public class UserEntity {
     
     @Id
-    @Column(name = "USER_ID", unique = true, nullable = false)
+    @Column(name = "user_id", unique = true, nullable = false)
     private String userId ;
 
-    @Column(name = "USER_PASSWORD", unique = true, nullable = false, length = 200)
+    @Column(name = "user_password", unique = true, nullable = false, length = 200)
     private String userPassword ;
 
-    @Column(name = "USER_NAME", nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String userName ;
 
-    @Column(name = "USER_JOB", nullable = true)
+    @Column(name = "user_job", nullable = true)
     private String userJob ;
 
-    @Column(name = "USER_INTEREST", nullable = true)
+    @Column(name = "user_interest", nullable = true)
     private String userInterest ; 
 
-    @Column(name = "PROFILE_PUBLIC", nullable = false)
+    @Column(name = "profile_public", nullable = false)
     private Boolean profilePublic = false;
 
     @PrePersist

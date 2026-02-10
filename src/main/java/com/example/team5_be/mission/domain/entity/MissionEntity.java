@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "MISSION_TBL")
+@Table(name = "mission_tbl")
 @Builder
 @Getter
 @NoArgsConstructor
@@ -49,19 +49,20 @@ public class MissionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mission_id")
     private Integer missionId;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "mission_name", nullable = false, length = 100)
     private String missionName;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "mission_definition", nullable = false, length = 500)
     private String missionDefinition;
 
 
-    @Column(nullable = false)
+    @Column(name = "mission_start_date", nullable = false)
     private LocalDate missionStartDate;
 
-    @Column(nullable = false)
+    @Column(name = "mission_end_date", nullable = false)
     private LocalDate missionEndDate;
 
 
