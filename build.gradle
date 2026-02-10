@@ -25,7 +25,6 @@ repositories {
 }
 
 dependencies {
-
 	// .env 이용해서 보안이 필요한 정보를 로컬에 저장하고 git hub에 공유하지 않겠다는 목적
  	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
