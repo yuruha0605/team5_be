@@ -7,16 +7,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HabitCreateRequestDTO {
+public class HabitDetailResponseDTO {
+    private Long habitId;
     private Long tagId;
     private Long styleId;
 
     private String habitName;
     private String habitDefinition;
 
-    // 반복형이면 null 허용
     private Integer startValue;
     private Integer stepValue;
     private Integer targetValue;
     private String unit;
+
+    private boolean isJoined;
+    private HabitStatus myStatus; // 없으면 null
 }

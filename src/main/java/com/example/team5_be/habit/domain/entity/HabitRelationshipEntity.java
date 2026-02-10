@@ -1,28 +1,29 @@
 package com.example.team5_be.habit.domain.entity;
 
-import com.example.team5_be.status.domain.entity.StatusEntity;
-import com.example.team5_be.user.domain.entity.UserEntity;
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.example.team5_be.status.domain.entity.StatusEntity;
+import com.example.team5_be.user.domain.entity.UserEntity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "habit_relationship")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Entity
-@Table(name = "habit_relationship")
 public class HabitRelationshipEntity {
 
     @EmbeddedId
     private HabitRelationshipId id;
 
-    @MapsId("memberId")
+    @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", nullable = false)
-    private UserEntity member;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @MapsId("habitId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -33,14 +34,19 @@ public class HabitRelationshipEntity {
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 
+    /** 상태 변경은 의미 있게 */
+    public void changeStatus(StatusEntity newStatus) {
+        this.status = newStatus;
+    }
+
+    @Embeddable
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    @Embeddable
     public static class HabitRelationshipId implements Serializable {
 
-        @Column(name = "member_id")
-        private Long memberId;
+        @Column(name = "user_id", length = 255)
+        private String userId;
 
         @Column(name = "habit_id")
         private Long habitId;
@@ -50,13 +56,12 @@ public class HabitRelationshipEntity {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             HabitRelationshipId that = (HabitRelationshipId) o;
-            return Objects.equals(memberId, that.memberId)
-                    && Objects.equals(habitId, that.habitId);
+            return Objects.equals(userId, that.userId) && Objects.equals(habitId, that.habitId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(memberId, habitId);
+            return Objects.hash(userId, habitId);
         }
     }
 }
