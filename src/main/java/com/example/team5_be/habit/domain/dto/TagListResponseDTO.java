@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TagListResponseDTO {
-    private Long tagId;
+    private Integer tagId;
     private String tagName;
 }

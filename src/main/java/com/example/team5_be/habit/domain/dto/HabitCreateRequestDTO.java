@@ -8,8 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HabitCreateRequestDTO {
-    private Long tagId;
-    private Long styleId;
+    private Integer tagId;
+    private Integer styleId;
 
     private String habitName;
     private String habitDefinition;

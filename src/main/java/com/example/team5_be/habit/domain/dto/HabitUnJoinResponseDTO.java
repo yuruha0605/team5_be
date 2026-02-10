@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HabitUnJoinResponseDTO {
-    private Long habitId;
+    private Integer habitId;
     private String message; // "HABIT_UNJOINED"
 }

@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HabitJoinResponseDTO {
-    private Long habitId;
+    private Integer habitId;
     private HabitStatus status;
     private String message; // "HABIT_JOINED" / "JOIN_UPDATED"
 }

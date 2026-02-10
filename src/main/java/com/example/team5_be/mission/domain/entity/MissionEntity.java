@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
+import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.domain.entity.StatusEntity;
@@ -70,9 +71,9 @@ public class MissionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    // @JoinColumn(name = "habitId", nullable = false)
-    // private HabitEntity habit;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "habit_id", nullable = false)
+    private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mode_id", nullable = false)
