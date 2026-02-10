@@ -67,7 +67,7 @@ public class MissionEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     // @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -75,14 +75,14 @@ public class MissionEntity {
     // private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "modeId", nullable = false)
+    @JoinColumn(name = "mode_id", nullable = false)
     private ModeEntity mode;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "levelId", nullable = false)
+    @JoinColumn(name = "level_id", nullable = false)
     private LevelEntity level;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "statusId", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 
 

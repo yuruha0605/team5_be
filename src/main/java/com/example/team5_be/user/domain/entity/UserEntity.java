@@ -52,7 +52,7 @@ public class UserEntity {
         }
     }
 
-    @OneToMany(mappedBy = "author", orphanRemoval = false)
+    @OneToMany(mappedBy = "user", orphanRemoval = false)
     private List<MissionEntity> missions = new ArrayList<>();
 
 
