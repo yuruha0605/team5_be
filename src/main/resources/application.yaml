@@ -1,3 +1,0 @@
-Spring:
-    profiles:
-        default: dev
