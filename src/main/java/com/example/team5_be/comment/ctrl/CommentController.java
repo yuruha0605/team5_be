@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.team5_be.comment.domain.dto.CommentRequestDTO;
 import com.example.team5_be.comment.domain.dto.CommentResponseDTO;
 import com.example.team5_be.comment.service.CommentService;
-import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
-import com.example.team5_be.mission.service.MissionService;
-import com.example.team5_be.user.domain.entity.UserEntity;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,7 +36,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final MissionService missionService ;
+
 
     @ApiResponses(
         {

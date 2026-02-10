@@ -12,7 +12,6 @@ import com.example.team5_be.comment.domain.dto.CommentRequestDTO;
 import com.example.team5_be.comment.domain.dto.CommentResponseDTO;
 import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.mission.dao.MissionRepository;
-import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.user.dao.UserRepository;
 import com.example.team5_be.user.domain.entity.UserEntity;
