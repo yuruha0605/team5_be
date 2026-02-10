@@ -54,12 +54,15 @@ public class SecurityConfig {
             .logout(logout -> logout.disable())   
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-            "/swagger-ui/**",
+            "/error",
+                        "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/user/signup",
                         "/user/signin",
                         "/comments/**",
                         "/bashoard/**",
+                        "/user/find",
+                        "/user/resetpassword",
                         "/openai/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "COMMENT_TBL")
+@Table(name = "comment_tbl")
 @Builder
 @Getter
 @NoArgsConstructor
@@ -28,12 +28,13 @@ public class CommentEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Integer commentId ; 
 
-    @Column(nullable = false , length = 150)
+    @Column(name = "title", nullable = false , length = 150)
     private String title;
 
-    @Column(nullable = false , length = 500)
+    @Column(name = "content", nullable = false , length = 500)
     private String content ; 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,7 +42,7 @@ public class CommentEntity {
     private MissionEntity mission ;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "user_id")
     private UserEntity user ;
 
     

@@ -1,5 +1,6 @@
 package com.example.team5_be.mission.domain.dto;
 
+import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
@@ -32,13 +33,13 @@ public class MissionRequestDTO {
 
 
     public MissionEntity toEntity(  UserEntity user,
-                                    //HabitEntity habit, 
+                                    HabitEntity habit, 
                                     ModeEntity mode, 
                                     LevelEntity level, 
                                     StatusEntity status) {
         return MissionEntity.builder()
                 .user(user)
-                //.habit(habit)
+                .habit(habit)
                 .mode(mode)
                 .level(level)
                 .status(status)

@@ -22,10 +22,10 @@ import lombok.Setter;
 
 @Entity
 @Table(
-    name = "MISSION_LOG_TBL",
+    name = "mission_log_tbl",
     uniqueConstraints = @UniqueConstraint(
         name = "uk_mission_log",
-        columnNames = {"missionId", "checkDate"}
+        columnNames = {"mission_id", "check_date"}
     )
 )
 @Builder
@@ -40,12 +40,12 @@ public class MissionLogEntity {
     private Long missionlogId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "missionId", nullable = false)
+    @JoinColumn(name = "mission_id", nullable = false)
     private MissionEntity mission;
 
-    @Column(name = "checkDate", nullable = false)
+    @Column(name = "check_date", nullable = false)
     private LocalDate checkDate;
 
-    @Column(name = "isChecked", nullable = false)
+    @Column(name = "is_checked", nullable = false)
     private Boolean isChecked;
 }

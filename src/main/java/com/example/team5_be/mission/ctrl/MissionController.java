@@ -17,17 +17,19 @@ import com.example.team5_be.mission.domain.dto.MissionRequestDTO;
 import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
 import com.example.team5_be.mission.service.MissionService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/missions")
 @RequiredArgsConstructor
+@Tag(name = "Mission", description = "미션 생성, 조회, 수정, 삭제 관련 명세서")
 public class MissionController {
 
     private final MissionService missionService ;
 
     // 미션 생성
-    @PostMapping("/create")
+    @PostMapping("/register")
     public ResponseEntity<MissionResponseDTO> create(@RequestBody MissionRequestDTO request) {
         System.out.println(">>>> mission ctrl create check");
         MissionResponseDTO response = missionService.create(request);
