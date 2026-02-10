@@ -70,7 +70,7 @@ public class CommentController {
 
     @ApiResponses(
         {
-            @ApiResponse(responseCode="200" , description="데이터 입력 성공"),
+            @ApiResponse(responseCode="201" , description="데이터 입력 성공"),
             @ApiResponse(responseCode="400" , description="잘못된 요청")
         }
     )
@@ -97,7 +97,16 @@ public class CommentController {
         
     }
 
-
+    @ApiResponses(
+            {
+                @ApiResponse(responseCode="204" , description="데이터 삭제 성공"),
+                @ApiResponse(responseCode="400" , description="잘못된 요청")
+            }
+        )
+    @Operation(
+        summary = "특정 미션에 댓글 삭제",
+        description = "댓글을 삭제한다(content, commentId)"
+    )
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<Void> delete(@PathVariable("commentId") Integer commentId) {
         System.out.println(">>>> mission / comment  ctrl path : /delete"); 
@@ -108,6 +117,17 @@ public class CommentController {
 
     }
 
+
+    @ApiResponses(
+        {
+            @ApiResponse(responseCode="200" , description="데이터 수정 성공"),
+            @ApiResponse(responseCode="404" , description="댓글 찾지 못함")
+        }
+    )
+    @Operation(
+        summary = "특정 미션에 댓글 수정",
+        description = "댓글을 수정한다"
+    )
     @PutMapping("/update/{commentId}")
     public ResponseEntity<Void> update( 
         @Parameter(description = "댓글 ID" , example = "1") 
