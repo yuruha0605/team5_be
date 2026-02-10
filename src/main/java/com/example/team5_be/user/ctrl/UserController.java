@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.team5_be.user.domain.dto.UserRequestDTO;
 import com.example.team5_be.user.domain.dto.UserResponseDTO;
+import com.example.team5_be.user.domain.entity.UserEntity;
 import com.example.team5_be.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,38 +26,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@Tag(name = "User", description = "사용자 생성 및 로그인, 탈퇴 관련 명세서")
 public class UserController {
     private final UserService userService ;
 
     //회원가입 암호 해싱처리 위해 
     private final PasswordEncoder passwordEncoder;
     
-    @ApiResponses(
-        {
-            @ApiResponse(responseCode = "201", description = "데이터 입력 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
-    )
-    @Operation(
-        summary = "회원가입",
-        description = "신규 회원 가입(email,password,name)" 
-    )
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        description = "사용자 가입 DTO",
-        required = true,
-        content = @Content(
-            schema = @Schema(implementation = UserRequestDTO.class)
-        ))
-        @RequestBody UserRequestDTO request) {
+    public ResponseEntity<Void> signUp(@RequestBody UserRequestDTO request) {
         
         System.out.println(">>> user ctrl path : /signup");
         System.out.println(">>> params : "+request);
@@ -72,26 +56,9 @@ public class UserController {
         }  
     }
 
-     @ApiResponses(
-        {
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
-    )
-    @Operation(
-        summary = "로그인",
-        description = "인증된 사용자 로그인(id,password)" 
-    )
+     
     @PostMapping("/signin")
-    
-    public ResponseEntity<UserResponseDTO> signIn(
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        description = "사용자 로그인 DTO",
-        required = true,
-        content = @Content(
-            schema = @Schema(implementation = UserRequestDTO.class)
-        ))
-        @RequestBody UserRequestDTO request) {
+    public ResponseEntity<UserResponseDTO> signIn(@RequestBody UserRequestDTO request) {
       
         System.out.println(">>> user ctrl path : /signin");
         System.out.println(">>> params : "+request);
@@ -116,6 +83,7 @@ public class UserController {
                 .body((UserResponseDTO)(map.get("response")));
     }
 
+    //로그아웃
     @PostMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorization){
@@ -127,12 +95,31 @@ public class UserController {
         
     }
 
+    //탈퇴
     @DeleteMapping("/me")
     public ResponseEntity<String> withdraw(@AuthenticationPrincipal String userId) {
         userService.withdraw(userId);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
     
+
+    /////아이디랑 이름으로 회원조회 하고 비밀번호 변경   
+    @PostMapping("/find") //민감정보라 post사용
+    public ResponseEntity<String> findUser(@RequestParam String userId,
+                                           @RequestParam String userName) {
+        UserEntity user = userService.findUserByIdAndName(userId, userName);
+        // 프론트에서 비밀번호 재설정 화면으로 이동시키면 됨
+        return ResponseEntity.ok("User verified. Proceed to reset password.");
+    }
+
+    // 비밀번호 재설정
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestParam String userId,
+                                                @RequestParam String newPassword) {
+        UserEntity user = userService.findById(userId);
+        userService.updatePassword(user, newPassword);
+        return ResponseEntity.ok("Password updated successfully.");
+    }
      
 
 }

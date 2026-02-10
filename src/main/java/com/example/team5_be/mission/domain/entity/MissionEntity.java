@@ -67,7 +67,8 @@ public class MissionEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId", nullable = false)
+
+    @JoinColumn(name = "member_id", nullable = false)
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -89,8 +90,5 @@ public class MissionEntity {
     @OneToMany(mappedBy = "mission", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
-
-
-    
     
 }
