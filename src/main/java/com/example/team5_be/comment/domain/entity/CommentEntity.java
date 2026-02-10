@@ -1,6 +1,7 @@
 package com.example.team5_be.comment.domain.entity;
 
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.user.domain.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class CommentEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId ; 
@@ -35,11 +37,14 @@ public class CommentEntity {
     private String content ; 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "missionId")
+    @JoinColumn(name = "mission_id")
     private MissionEntity mission ;
 
-    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id")
+    private UserEntity user ;
 
+    
 
     public void update(String title, String content) {
         this.title = title;

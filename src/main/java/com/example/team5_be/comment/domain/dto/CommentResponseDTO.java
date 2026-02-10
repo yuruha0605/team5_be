@@ -15,22 +15,18 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CommentResponseDTO {
     private Integer commentId;
+    private String title;
     private String content;
     private Integer missionId;
-
-    public static CommentResponseDTO fromEntityWithoutComments(CommentEntity entity) {
-        return CommentResponseDTO.builder()
-                .commentId(entity.getCommentId())
-                .title(entity.getMission())
-                .content(entity.getContent())
-                .build();
-    }
+    private String userId;
 
     public static CommentResponseDTO fromEntity(CommentEntity entity) {
         return CommentResponseDTO.builder()
-                                .commentId(entity.getCommentId())
-                                .content(entity.getContent())
-                                .missionId(entity.getMission().getMissionId())
-                                .build();
+                .commentId(entity.getCommentId())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .missionId(entity.getMission().getMissionId())
+                .userId(entity.getUser().getUserId())
+                .build();
     }
 }
