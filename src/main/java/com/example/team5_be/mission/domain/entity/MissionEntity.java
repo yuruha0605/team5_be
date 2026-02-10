@@ -1,5 +1,6 @@
 package com.example.team5_be.mission.domain.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import com.example.team5_be.comment.domain.entity.CommentEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.domain.entity.StatusEntity;
+import com.example.team5_be.user.domain.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +37,7 @@ import lombok.Setter;
 public class MissionEntity {
     /*
     [PK] mission_id
-    [FK] member_id
+    [FK] user_id
     [FK] habit_id
     [FK] mode_id
     [FK] level_id
@@ -57,32 +59,31 @@ public class MissionEntity {
     private String missionDefinition;
 
 
-    @Column(nullable = false, length = 20)
-    private String missionStartDate;
+    @Column(nullable = false)
+    private LocalDate missionStartDate;
 
-    @Column(nullable = false, length = 20)
-    private String missionEndDate;
+    @Column(nullable = false)
+    private LocalDate missionEndDate;
 
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", nullable = false)
-    private MemberEntity memberName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "habit_id", nullable = false)
-    private HabitEntity habitName;
+    @JoinColumn(name = "userId", nullable = false)
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "mode_id", nullable = false)
-    private ModeEntity modeName;
+    @JoinColumn(name = "habitId", nullable = false)
+    private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "level_id", nullable = false)
-    private LevelEntity levelName;
+    @JoinColumn(name = "modeId", nullable = false)
+    private ModeEntity mode;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "levelId", nullable = false)
+    private LevelEntity level;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "status_id", nullable = false)
-    private StatusEntity statusName;
+    @JoinColumn(name = "statusId", nullable = false)
+    private StatusEntity status;
 
 
     @OneToMany(mappedBy = "mission", fetch = FetchType.LAZY)

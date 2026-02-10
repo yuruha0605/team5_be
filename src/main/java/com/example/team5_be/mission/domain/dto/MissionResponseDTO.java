@@ -15,11 +15,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MissionResponseDTO {
     private Integer missionId;
-    private Integer memberName;
-    private Integer habitName;
-    private Integer modeName;
-    private Integer levelName;
-    private Integer statusName;
+    private String userName;
+    private String habitName;
+    private String modeName;
+    private String levelName;
+    private String statusName;
     private String missionName;
     private String missionDefinition;
 
@@ -27,11 +27,11 @@ public class MissionResponseDTO {
     public static MissionResponseDTO fromEntity(MissionEntity entity) {
         return MissionResponseDTO.builder()
                 .missionId(entity.getMissionId())
-                .memberName(entity.getMemberName())
-                .habitName(entity.getHabitName())
-                .modeName(entity.getModeName())
-                .levelName(entity.getLevelName())
-                .statusName(entity.getStatusName())
+                .userName(entity.getUser().getUserName())
+                .habitName(entity.getHabit().getHabitName())
+                .modeName(entity.getMode().getModeName())
+                .levelName(entity.getLevel().getLevelName())
+                .statusName(entity.getStatus().getStatusName())
                 .missionName(entity.getMissionName())
                 .missionDefinition(entity.getMissionDefinition())
                 .build() ;

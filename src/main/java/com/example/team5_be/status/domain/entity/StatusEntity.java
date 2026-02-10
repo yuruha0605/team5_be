@@ -22,7 +22,7 @@ public class StatusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long statusId ;
+    private Integer statusId ;
     private String statusName ;
     
 }

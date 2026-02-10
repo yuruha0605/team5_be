@@ -1,5 +1,6 @@
 package com.example.team5_be.level.domain.entity;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +23,8 @@ public class LevelEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long levelId ;
+    private Integer levelId ;
     
     private String levelName ;
-    private Long levelDate ;
+    private Integer levelDate ;
 }

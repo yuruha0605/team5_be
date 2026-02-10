@@ -1,15 +1,21 @@
 package com.example.team5_be.mission.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.team5_be.common.health.domain.dto.HealthResponseDTO;
-import com.example.team5_be.common.health.domain.entity.HealthEntity;
+import com.example.team5_be.level.dao.LevelRepository;
+import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mission.dao.MissionRepository;
 import com.example.team5_be.mission.domain.dto.MissionRequestDTO;
 import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.mode.dao.ModeRepository;
+import com.example.team5_be.mode.domain.entity.ModeEntity;
+import com.example.team5_be.status.dao.StatusRepository;
+import com.example.team5_be.status.domain.entity.StatusEntity;
+import com.example.team5_be.user.dao.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +25,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MissionService {
     private final MissionRepository missionRepository ;
+    private final LevelRepository levelRepository;
+    private final ModeRepository modeRepository;
+    private final StatusRepository statusRepository;
+    //private final HabitRepository habitRepository;
+    private final UserRepository userRepository;
 
 
     /*
     Mission RequestDTO
-        private Integer memberId;
+        private Integer userId;
         private Integer habitId;
         private Integer modeId;
         private Integer levelId;
@@ -37,14 +48,33 @@ public class MissionService {
     @Transactional
     public MissionResponseDTO create(MissionRequestDTO request) {
         System.out.println(">>>> Entered mission service : create");
+
+        LevelEntity level = levelRepository.findById(request.getLevelId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
+
+        ModeEntity mode = modeRepository.findById(request.getModeId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid modeId: " + request.getModeId()));
+
+        StatusEntity status = statusRepository.findById(request.getStatusId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid statusId: " + request.getStatusId()));
+
+        LocalDate startDate = LocalDate.now();
+
+        if (level.getLevelDate() == null) {
+            throw new IllegalArgumentException("Level duration is missing for levelId: " + request.getLevelId());
+        }
+        LocalDate endDate = startDate.plusDays(level.getLevelDate());
+
         MissionEntity entity = missionRepository.save(
                                     MissionEntity.builder()
-                                            .habitName(request.getHabitId().getHabitName())
-                                            .modeName(request.getModeId().getModeName())
-                                            .levelName(request.getLevelId().getLevelName())
-                                            .statusName(request.getStatusId().getStatusName())
+                                            //.habit(null)
+                                            .mode(mode)
+                                            .level(level)
+                                            .status(status)
                                             .missionName(request.getMissionName())
                                             .missionDefinition(request.getMissionDefinition())
+                                            .missionStartDate(startDate)
+                                            .missionEndDate(endDate)
                                             .build()) ;   
         MissionResponseDTO response = MissionResponseDTO.fromEntity(entity);
         return response ;

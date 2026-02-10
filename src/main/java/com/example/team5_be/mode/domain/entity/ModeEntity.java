@@ -22,7 +22,7 @@ public class ModeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long modeId ;
+    private Integer modeId ;
     private String modeName ;
     
 }
