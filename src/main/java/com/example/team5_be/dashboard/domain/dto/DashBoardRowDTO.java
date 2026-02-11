@@ -13,6 +13,6 @@ public class DashBoardRowDTO {
     private Integer rank;
     private String userId;
     private String userName;
-    private Long totalScore;
-    private Long trophyCount;
+    private Integer totalScore;
+    private Integer trophyCount;
 }
