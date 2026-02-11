@@ -13,5 +13,4 @@ public class Team5BeApplication {
     	env.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		SpringApplication.run(Team5BeApplication.class, args);
 	}
-
 }

@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class MissionService {
-    private final MissionRepository missionRepository ;
+    private final MissionRepository missionRepository;
     private final LevelRepository levelRepository;
     private final ModeRepository modeRepository;
     private final StatusRepository statusRepository;
@@ -37,6 +37,7 @@ public class MissionService {
     private static final int LEVEL_UP_DAYS = 60;
     private static final String STATUS_IN_PROGRESS_NAME = "진행 중";
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
+    private static final String LEVEL_UP_DEFAULT_LEVEL_NAME = "레벨 1";
 
 
     /*
@@ -53,14 +54,23 @@ public class MissionService {
 
     // 미션 생성
     @Transactional
-    public MissionResponseDTO create(MissionRequestDTO request) {
+    public MissionResponseDTO createForUser(MissionRequestDTO request, String userId) {
         System.out.println(">>>> Entered mission service : create");
-
-        LevelEntity level = levelRepository.findById(request.getLevelId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
 
         ModeEntity mode = modeRepository.findById(request.getModeId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid modeId: " + request.getModeId()));
+
+        LevelEntity level;
+        if (MODE_LEVEL_UP_NAME.equals(mode.getModeName())) {
+            level = levelRepository.findByLevelName(LEVEL_UP_DEFAULT_LEVEL_NAME)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid levelName: " + LEVEL_UP_DEFAULT_LEVEL_NAME));
+        } else {
+            if (request.getLevelId() == null) {
+                throw new IllegalArgumentException("levelId is required for mode: " + mode.getModeName());
+            }
+            level = levelRepository.findById(request.getLevelId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
+        }
 
         StatusEntity status = statusRepository.findByStatusName(STATUS_IN_PROGRESS_NAME)
             .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_IN_PROGRESS_NAME));
@@ -68,8 +78,8 @@ public class MissionService {
         HabitEntity habit = habitRepository.findById(request.getHabitId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid habitId: " + request.getHabitId()));
 
-        UserEntity user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + request.getUserId()));
+        UserEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + userId));
 
         LocalDate startDate = LocalDate.now();
 
@@ -100,20 +110,22 @@ public class MissionService {
     }
 
 
-    // 미션 ID 단건 조회
-    @Transactional
-    public MissionResponseDTO read(Integer missionId) {
-        System.out.println(">>>> Entered mission service : read");
-        MissionEntity entity = missionRepository.findById(missionId)
-                                .orElseThrow(() -> new RuntimeException("read fail"));
 
-        MissionResponseDTO response = MissionResponseDTO.fromEntity(entity);
-        return response ;
+
+
+    @Transactional
+    public MissionResponseDTO readForUser(Integer missionId, String userId) {
+        System.out.println(">>>> Entered mission service : readForUser");
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
+        return MissionResponseDTO.fromEntity(entity);
     }
 
-    // 한 유저의 모든 미션 조회
+
+    // 로그인한 유저의 미션 목록 조회
     @Transactional
-    public List<MissionResponseDTO> list(String userId) {
+    public List<MissionResponseDTO> listForUser(String userId) {
         System.out.println(">>>> Entered mission service : list");
         List<MissionEntity> entities = missionRepository.findByUser_UserId(userId);
         
@@ -124,15 +136,30 @@ public class MissionService {
     }
 
 
+    // 로그인한 유저의 미션 이름으로 검색
     @Transactional
-    public MissionResponseDTO update(Integer missionId, MissionRequestDTO request) {
-        MissionEntity entity = missionRepository.findById(missionId)
+    public List<MissionResponseDTO> searchByName(String userId, String keyword) {
+        System.out.println(">>>> Entered mission service : searchByName");
+        List<MissionEntity> entities = missionRepository
+                .findByUser_UserIdAndMissionNameContainingIgnoreCase(userId, keyword);
+
+        return entities.stream()
+                .map(MissionResponseDTO::fromEntity)
+                .toList();
+    }
+
+
+
+    // 로그인한 유저의 미션 수정
+    @Transactional
+    public MissionResponseDTO updateForUser(Integer missionId, MissionRequestDTO request, String userId) {
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
                 .orElseThrow(() -> new RuntimeException("read fail"));
 
         LevelEntity level = entity.getLevel();
         LocalDate endDate = entity.getMissionEndDate();
 
-        if (request.getLevelId() != null) {
+        if (request.getLevelId() != null && !MODE_LEVEL_UP_NAME.equals(entity.getMode().getModeName())) {
             LevelEntity newLevel = levelRepository.findById(request.getLevelId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
             level = newLevel;
@@ -157,25 +184,17 @@ public class MissionService {
     }
 
     
-    
 
-    // 미션 삭제
+
     @Transactional
-     public boolean delete(Integer missionId) {
-        System.out.println(">>>> Entered mission service : delete");
-     
-        MissionEntity entity = missionRepository.findById(missionId)
-                                .orElseThrow(() -> new RuntimeException("read fail"));
-        
+    public boolean deleteForUser(Integer missionId, String userId) {
+        System.out.println(">>>> Entered mission service : deleteForUser");
+
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
         missionRepository.deleteById(entity.getMissionId());
-        
-        return true ;
-    }
-
-    @Transactional
-    public MissionEntity findById(Integer missionId) {
-        return missionRepository.findById(missionId)
-                .orElseThrow(() -> new RuntimeException("Mission not found"));
+        return true;
     }
     
 }
