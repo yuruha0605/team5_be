@@ -65,7 +65,8 @@ public class SecurityConfig {
                         "/user/find",
                         "/user/resetpassword",
                         "/openai/**",
-                        "/me/**"
+                        "/me/**",
+                        "/mission-logs/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated() //인증필요한 엔드포인트

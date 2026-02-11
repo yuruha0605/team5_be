@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.team5_be.mission.dao.MissionRepository;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
@@ -39,9 +41,12 @@ public class MissionLogService {
     private final MissionRepository missionRepository;
     private final StatusRepository statusRepository;
 
+
+
     public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
         MissionEntity mission = missionRepository.findById(request.getMissionId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid missionId: " + request.getMissionId()));
+        validateCheckDate(request, mission);
 
         MissionLogEntity entity = missionLogRepository
                 .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
@@ -63,10 +68,31 @@ public class MissionLogService {
         return MissionLogResponseDTO.fromEntity(saved);
     }
 
+
+    private void validateCheckDate(MissionLogRequestDTO request, MissionEntity mission) {
+        LocalDate checkDate = request.getCheckDate();
+        if (checkDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "checkDate is required");
+        }
+
+        LocalDate startDate = mission.getMissionStartDate();
+        LocalDate endDate = mission.getMissionEndDate();
+
+        if (checkDate.isBefore(startDate) || checkDate.isAfter(endDate)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "checkDate is outside mission period");
+        }
+    }
+
+
+
     private boolean isCompletionTargetMode(MissionEntity mission) {
         String modeName = mission.getMode().getModeName();
         return MODE_LEVEL_UP_NAME.equals(modeName) || MODE_SELF_SELECT_NAME.equals(modeName);
     }
+
+
 
     private void markMissionCompleted(MissionEntity mission) {
         StatusEntity completed = statusRepository.findByStatusName(STATUS_COMPLETED_NAME)
@@ -88,6 +114,8 @@ public class MissionLogService {
 
         missionRepository.save(updated);
     }
+
+
 
     public CalendarMonthResponseDTO getMonthStamps(String userId, String month) {
         YearMonth yearMonth = YearMonth.parse(month, YEAR_MONTH_FORMATTER);
@@ -118,6 +146,8 @@ public class MissionLogService {
                 .activeDates(activeDates)
                 .build();
     }
+
+
 
     public DailyMissionListResponseDTO getDailyMissions(String userId, LocalDate date) {
         List<MissionEntity> missions = missionRepository
@@ -155,6 +185,8 @@ public class MissionLogService {
                 .build();
     }
 
+
+    
     private Boolean resolveSuccess(MissionLogEntity log) {
         return log == null ? null : log.getIsChecked();
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +72,7 @@ public class CommentController {
     @ApiResponses(
         {
             @ApiResponse(responseCode="201" , description="데이터 입력 성공"),
+            @ApiResponse(responseCode="401" , description="인증 필요"),
             @ApiResponse(responseCode="400" , description="잘못된 요청")
         }
     )
@@ -86,6 +88,7 @@ public class CommentController {
         content = @Content(
             schema = @Schema(implementation = CommentRequestDTO.class)
         ))
+        Authentication authentication,
         @PathVariable Integer missionId,
         @RequestBody CommentRequestDTO request) {
 
@@ -93,6 +96,10 @@ public class CommentController {
         System.out.println(">>>> params : "+ request); 
         System.out.println(">>>> title   : " + request.getTitle());
         System.out.println(">>>> content : " + request.getContent());
+
+        if (authentication == null || authentication.getName() == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -103,6 +110,7 @@ public class CommentController {
     @ApiResponses(
             {
                 @ApiResponse(responseCode="204" , description="데이터 삭제 성공"),
+                @ApiResponse(responseCode="401" , description="인증 필요"),
                 @ApiResponse(responseCode="400" , description="잘못된 요청")
             }
         )
@@ -111,9 +119,15 @@ public class CommentController {
         description = "댓글을 삭제한다(content, commentId)"
     )
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<Void> delete(@PathVariable("commentId") Integer commentId) {
+    public ResponseEntity<Void> delete(
+        Authentication authentication,
+        @PathVariable("commentId") Integer commentId) {
         System.out.println(">>>> mission / comment  ctrl path : /delete"); 
         System.out.println(">>>> params : "+ commentId); 
+
+        if (authentication == null || authentication.getName() == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
         commentService.delete(commentId); 
         return ResponseEntity.noContent().build() ; 
@@ -124,6 +138,7 @@ public class CommentController {
     @ApiResponses(
         {
             @ApiResponse(responseCode="200" , description="데이터 수정 성공"),
+            @ApiResponse(responseCode="401" , description="인증 필요"),
             @ApiResponse(responseCode="404" , description="댓글 찾지 못함")
         }
     )
@@ -133,6 +148,7 @@ public class CommentController {
     )
     @PutMapping("/update/{commentId}")
     public ResponseEntity<Void> update( 
+        Authentication authentication,
         @Parameter(description = "댓글 ID" , example = "1") 
         @PathVariable("commentId") Integer commentId, 
         // @Schema(description = "블로그 DTO")
@@ -140,6 +156,10 @@ public class CommentController {
         System.out.println(">>>> comment ctrl path : /udpate"); 
         System.out.println(">>>> commentId : "+ commentId);
         System.out.println(">>>> params  : "+ request); 
+
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         CommentResponseDTO response = commentService.update(commentId, request);
 
