@@ -51,7 +51,7 @@ public class MissionController {
         summary = "미션 생성(등록)",
         description = "미션 생성(등록)을 수행합니다. 로그인 유저 기준으로 생성되며, 습관ID와 모드ID는 필수입니다. 상태는 기본값으로 '진행 중'으로 설정됩니다. 레벨은 모드에 따라, 레벨업의 경우 어떤 입력이 없어도 레벨1이 설정되며 자율선택 모드일 경우 사용자가 직접 입력해야 합니다."
     )
-    @PostMapping("/me/register")
+    @PostMapping("/register")
     public ResponseEntity<MissionResponseDTO> createForUser(
             Authentication authentication,
             @RequestBody MissionRequestDTO request) {
@@ -82,7 +82,7 @@ public class MissionController {
         summary = "로그인 유저 미션 단건 조회",
         description = "로그인된 유저의 미션만 조회합니다."
     )
-    @GetMapping("/me/read/{missionId}")
+    @GetMapping("/read/{missionId}")
     public ResponseEntity<MissionResponseDTO> readMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId) {
@@ -109,7 +109,7 @@ public class MissionController {
         summary = "로그인 유저 미션 목록 조회",
         description = "로그인된 유저의 미션 목록을 조회합니다."
     )
-    @GetMapping("/me/list")
+    @GetMapping("/list")
     public ResponseEntity<List<MissionResponseDTO>> listMyMissions(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -134,7 +134,7 @@ public class MissionController {
         summary = "로그인 유저 미션 제목 검색",
         description = "로그인된 유저의 미션을 키워드로 부분 검색합니다."
     )
-    @GetMapping("/me/search")
+    @GetMapping("/search")
     public ResponseEntity<List<MissionResponseDTO>> searchMyMissionsByName(
             Authentication authentication,
             @RequestParam("keyword") String keyword) {
@@ -160,7 +160,7 @@ public class MissionController {
         summary = "로그인 유저 미션 수정",
         description = "로그인된 유저의 미션만 수정합니다."
     )
-    @PutMapping("/me/update/{missionId}")
+    @PutMapping("/update/{missionId}")
     public ResponseEntity<MissionResponseDTO> updateMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId,
@@ -187,7 +187,7 @@ public class MissionController {
         summary = "로그인 유저 미션 삭제",
         description = "로그인된 유저의 미션만 삭제합니다."
     )
-    @DeleteMapping("/me/delete/{missionId}")
+    @DeleteMapping("/delete/{missionId}")
     public ResponseEntity<Boolean> deleteMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId) {

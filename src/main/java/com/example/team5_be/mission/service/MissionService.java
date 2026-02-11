@@ -40,18 +40,6 @@ public class MissionService {
     private static final String LEVEL_UP_DEFAULT_LEVEL_NAME = "레벨 1";
 
 
-    /*
-    Mission RequestDTO
-        private Integer userId;
-        private Integer habitId;
-        private Integer modeId;
-        private Integer levelId;
-        private Integer statusId;
-        
-        private String missionName;
-        private String missionDefinition;
-    */
-
     // 미션 생성
     @Transactional
     public MissionResponseDTO createForUser(MissionRequestDTO request, String userId) {

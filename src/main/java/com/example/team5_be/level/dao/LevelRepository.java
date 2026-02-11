@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface LevelRepository extends JpaRepository<LevelEntity, Integer> {
     Optional<LevelEntity> findByLevelName(String levelName);
+
+    Optional<LevelEntity> findTopByOrderByLevelIdDesc();
 }

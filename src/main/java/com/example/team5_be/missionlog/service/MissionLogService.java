@@ -23,8 +23,6 @@ import com.example.team5_be.missionlog.domain.dto.DailyMissionListResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.MissionLogRequestDTO;
 import com.example.team5_be.missionlog.domain.dto.MissionLogResponseDTO;
 import com.example.team5_be.missionlog.domain.entity.MissionLogEntity;
-import com.example.team5_be.status.dao.StatusRepository;
-import com.example.team5_be.status.domain.entity.StatusEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,13 +31,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MissionLogService {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
-    private static final String STATUS_COMPLETED_NAME = "완료";
-    private static final String MODE_LEVEL_UP_NAME = "레벨업";
-    private static final String MODE_SELF_SELECT_NAME = "자율 선택";
+        private static final int STATUS_FAILED_ID = 4;
 
     private final MissionLogRepository missionLogRepository;
     private final MissionRepository missionRepository;
-    private final StatusRepository statusRepository;
 
 
 
@@ -59,11 +54,9 @@ public class MissionLogService {
 
         MissionLogEntity saved = missionLogRepository.save(entity);
 
-        if (Boolean.TRUE.equals(saved.getIsChecked())
-                && isCompletionTargetMode(mission)
-                && !saved.getCheckDate().isBefore(mission.getMissionEndDate())) {
-            markMissionCompleted(mission);
-        }
+                if (Boolean.TRUE.equals(saved.getIsChecked()) && !isFailedStatus(mission)) {
+                        // completion is handled by scheduler at midnight
+                }
 
         return MissionLogResponseDTO.fromEntity(saved);
     }
@@ -87,33 +80,10 @@ public class MissionLogService {
 
 
 
-    private boolean isCompletionTargetMode(MissionEntity mission) {
-        String modeName = mission.getMode().getModeName();
-        return MODE_LEVEL_UP_NAME.equals(modeName) || MODE_SELF_SELECT_NAME.equals(modeName);
-    }
-
-
-
-    private void markMissionCompleted(MissionEntity mission) {
-        StatusEntity completed = statusRepository.findByStatusName(STATUS_COMPLETED_NAME)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_COMPLETED_NAME));
-
-        MissionEntity updated = MissionEntity.builder()
-                .missionId(mission.getMissionId())
-                .user(mission.getUser())
-                .habit(mission.getHabit())
-                .mode(mission.getMode())
-                .level(mission.getLevel())
-                .status(completed)
-                .missionName(mission.getMissionName())
-                .missionDefinition(mission.getMissionDefinition())
-                .missionStartDate(mission.getMissionStartDate())
-                .missionEndDate(mission.getMissionEndDate())
-                .comments(mission.getComments())
-                .build();
-
-        missionRepository.save(updated);
-    }
+        private boolean isFailedStatus(MissionEntity mission) {
+                com.example.team5_be.status.domain.entity.StatusEntity status = mission.getStatus();
+                return status != null && STATUS_FAILED_ID == status.getStatusId();
+        }
 
 
 
