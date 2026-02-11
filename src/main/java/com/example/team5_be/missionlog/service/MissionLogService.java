@@ -23,6 +23,7 @@ import com.example.team5_be.missionlog.domain.dto.DailyMissionListResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.MissionLogRequestDTO;
 import com.example.team5_be.missionlog.domain.dto.MissionLogResponseDTO;
 import com.example.team5_be.missionlog.domain.entity.MissionLogEntity;
+import com.example.team5_be.openai.service.OpenAIService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,31 +36,46 @@ public class MissionLogService {
 
     private final MissionLogRepository missionLogRepository;
     private final MissionRepository missionRepository;
+    private final OpenAIService openAIService;
 
 
 
-    public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
-        MissionEntity mission = missionRepository.findById(request.getMissionId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid missionId: " + request.getMissionId()));
-        validateCheckDate(request, mission);
+public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
+    MissionEntity mission = missionRepository.findById(request.getMissionId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid missionId: " + request.getMissionId()));
+    validateCheckDate(request, mission);
 
-        MissionLogEntity entity = missionLogRepository
-                .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
-                .orElseGet(() -> MissionLogEntity.builder()
-                        .mission(mission)
-                        .checkDate(request.getCheckDate())
-                        .build());
+    MissionLogEntity entity = missionLogRepository
+            .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
+            .orElseGet(() -> MissionLogEntity.builder()
+                    .mission(mission)
+                    .checkDate(request.getCheckDate())
+                    .build());
 
-        entity.setIsChecked(request.getIsChecked());
+    entity.setIsChecked(request.getIsChecked());
 
-        MissionLogEntity saved = missionLogRepository.save(entity);
+    MissionLogEntity saved = missionLogRepository.save(entity);
 
-                if (Boolean.TRUE.equals(saved.getIsChecked()) && !isFailedStatus(mission)) {
-                        // completion is handled by scheduler at midnight
-                }
-
-        return MissionLogResponseDTO.fromEntity(saved);
+    if (Boolean.TRUE.equals(saved.getIsChecked()) && !isFailedStatus(mission)) {
+            // completion is handled by scheduler at midnight
     }
+
+    // ========== AI 응원 메시지 생성 ==========
+    String encouragement = openAIService.generateEncouragementMessage(
+        mission.getMissionName(),
+        request.getIsChecked()
+    );
+    
+
+    return MissionLogResponseDTO.builder()
+            .missionlogId(saved.getMissionlogId())
+            .missionId(saved.getMission().getMissionId())
+            .checkDate(saved.getCheckDate())
+            .isChecked(saved.getIsChecked())
+            .encouragementMessage(encouragement)  
+            .build();
+    
+}
 
 
     private void validateCheckDate(MissionLogRequestDTO request, MissionEntity mission) {
