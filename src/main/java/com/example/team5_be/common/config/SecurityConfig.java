@@ -60,6 +60,7 @@ public class SecurityConfig {
                         "/user/signup",
                         "/user/signin",
                         "/comments/**",
+                        "/missions",
                         "/bashoard/**",
                         "/user/find",
                         "/user/resetpassword",

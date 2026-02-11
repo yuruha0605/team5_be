@@ -12,7 +12,7 @@ import com.example.team5_be.trophy.domain.entity.TrophyRelationshipEntity;
 import com.example.team5_be.user.domain.entity.UserEntity;
 
 @Repository
-public interface TrophyRelationshipRepository extends JpaRepository<TrophyRelationshipEntity, Long> {
+public interface TrophyRelationshipRepository extends JpaRepository<TrophyRelationshipEntity, Integer> {
     boolean existsByUserAndTrophy(UserEntity user, TrophyEntity trophy);
 
     List<TrophyRelationshipEntity> findAllByUser(UserEntity user);

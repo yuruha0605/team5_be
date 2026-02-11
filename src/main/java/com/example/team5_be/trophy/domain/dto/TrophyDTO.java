@@ -13,13 +13,23 @@
 // @AllArgsConstructor
 // public class TrophyDTO {
     
+<<<<<<< HEAD
 //     private Long trophyId;
+=======
+    private Integer trophyId;
+>>>>>>> d85bec330150517729fb1c69906e3fe1880b2ec0
 
 //     private String trophyName;
 
+<<<<<<< HEAD
 //     // Habit 정보 중 필요한 것만 담기
 //     private Long habitId;
 //     private String habitName;
+=======
+    // Habit 정보 중 필요한 것만 담기
+    private Integer habitId;
+    private String habitName;
+>>>>>>> d85bec330150517729fb1c69906e3fe1880b2ec0
 
 //     public TrophyDTO toDTO(TrophyEntity trophy) {
 //     return TrophyDTO.builder()

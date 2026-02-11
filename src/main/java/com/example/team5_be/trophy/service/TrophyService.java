@@ -28,12 +28,21 @@
 //     private final TrophyRepository trophyRepo;
 //     private final HabitRelationshipRepository habitRelRepo;
 
+<<<<<<< HEAD
 //     // 미션 완료 시 트로피 지급 (트로피를 DB에 새로 생성)
 //     @Transactional
 //     public boolean awardTrophy(String userId, Long habitId) {
 //         // 1. HabitRelationship 조회
 //         HabitRelationshipEntity hr = habitRelRepo.findById_UserIdAndId_HabitId(userId, habitId)
 //                 .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
+=======
+    // 미션 완료 시 트로피 지급 (트로피를 DB에 새로 생성)
+    @Transactional
+    public boolean awardTrophy(String userId, Integer habitId) {
+        // 1. HabitRelationship 조회
+        HabitRelationshipEntity hr = habitRelRepo.findById_UserIdAndId_HabitId(userId, habitId)
+                .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
+>>>>>>> d85bec330150517729fb1c69906e3fe1880b2ec0
 
 //         // 2. 완료 여부 확인
 //         if (!hr.getStatus().getStatusName().equals("COMPLETED")) {
