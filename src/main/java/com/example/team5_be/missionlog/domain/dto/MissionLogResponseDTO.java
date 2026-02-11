@@ -20,6 +20,7 @@ public class MissionLogResponseDTO {
     private Integer missionId;
     private LocalDate checkDate;
     private Boolean isChecked;
+    private String encouragementMessage;
 
     public static MissionLogResponseDTO fromEntity(MissionLogEntity entity) {
         return MissionLogResponseDTO.builder()
@@ -27,6 +28,7 @@ public class MissionLogResponseDTO {
                 .missionId(entity.getMission().getMissionId())
                 .checkDate(entity.getCheckDate())
                 .isChecked(entity.getIsChecked())
+                // encouragementMessage는 Service에서 별도로 set
                 .build();
     }
 }
