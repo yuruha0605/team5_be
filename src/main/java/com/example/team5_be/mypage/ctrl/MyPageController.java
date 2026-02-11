@@ -18,12 +18,13 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-    @GetMapping("/report")
+    @GetMapping
     public ResponseEntity<ReportDTO> getMonthlyReport(
             @AuthenticationPrincipal String userId,
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
     ) {
+
         if (month == null) month = YearMonth.now();
 
         ReportDTO report = myPageService.getReport(userId, month);

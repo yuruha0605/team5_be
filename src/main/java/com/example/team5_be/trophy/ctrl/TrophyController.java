@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.team5_be.trophy.domain.dto.TrophyDTO;
 import com.example.team5_be.trophy.service.TrophyService;
-import com.example.team5_be.user.dao.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +21,12 @@ import lombok.RequiredArgsConstructor;
 public class TrophyController {
 
     private final TrophyService trophyService;
-    private final UserRepository userRepo;
 
     // 습관 완료 → 트로피 지급
     @PostMapping("/award/{habitId}")
     public ResponseEntity<String> awardTrophy(@PathVariable Integer habitId,
                                           @AuthenticationPrincipal String userId) {
+
         boolean awarded = trophyService.awardTrophy(userId, habitId);
         if (awarded) {
             return ResponseEntity.ok("Trophy awarded!");

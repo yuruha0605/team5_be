@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="Trophy")
+@Table(name="trophy_tbl")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

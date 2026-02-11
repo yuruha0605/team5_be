@@ -38,7 +38,6 @@ public class MyPageService {
         Map<Integer, List<MissionEntity>> habitMissionMap = allMissions.stream()
                 .collect(Collectors.groupingBy(m -> m.getHabit().getHabitId()));
 
-
         // 이번 달 MissionLog 조회
         LocalDate monthStart = month.atDay(1);
         LocalDate monthEnd = month.atEndOfMonth();
@@ -54,22 +53,30 @@ public class MyPageService {
 
 
         // Habit별 진행률 계산 (이번 달 일일로그 완료 횟수 기준, 한달 진행률)
+        int daysInMonth = month.lengthOfMonth();
+
+        // Habit별 진행률 계산 (MissionLog 기준 월 진행률)
         List<HabitProgressDTO> habitProgressList = habitMissionMap.entrySet().stream()
                 .map(entry -> {
                         Integer habitId = entry.getKey();
                         List<MissionEntity> missions = entry.getValue();
 
-                        // 이번 달 이 habit에 속한 완료된 로그만
-                        long completedThisMonth = monthLogs.stream()
-                                .filter(log -> missions.stream()
-                                        .anyMatch(m -> m.getMissionId().equals(log.getMission().getMissionId()))
-                                )
+                        // 이 Habit에 속한 missionId들
+                        Set<Integer> missionIds = missions.stream()
+                                .map(MissionEntity::getMissionId)
+                                .collect(Collectors.toSet());
+
+                        // 해당 Habit의 이번 달 성공 날짜들 (중복 제거)
+                        long successDays = monthLogs.stream()
+                                .filter(log -> missionIds.contains(log.getMission().getMissionId()))
+                                .map(MissionLogEntity::getCheckDate)
+                                .distinct()   // ⭐ 하루 1번만 카운트
                                 .count();
 
-                        double progress = missions.isEmpty() ? 0.0 :
-                                (double) completedThisMonth / missions.size();
+                        double progress = (double) successDays / daysInMonth;
 
                         String habitName = missions.get(0).getHabit().getHabitName();
+
                         return new HabitProgressDTO(habitId, habitName, progress);
                 })
                 .toList();
@@ -85,7 +92,8 @@ public class MyPageService {
 
         //총 완료 미션 수 
         long completedMissions = allMissions.stream()
-                .filter(m -> "COMPLETED".equals(m.getStatus().getStatusName()))
+                .filter(m -> m.getStatus() != null &&
+                     Integer.valueOf(3).equals(m.getStatus().getStatusId()))
                 .count();
                 
         // 전체 태그별 Mission 수

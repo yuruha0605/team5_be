@@ -63,7 +63,7 @@ public class SecurityConfig {
                         "/missions/**",
                         "/bashoard/**",
                         "/user/find",
-                        "/user/resetpassword",
+                        "/user/resetPassword",
                         "/openai/**",
                         "/me/**",
                         "/mission-logs/**"

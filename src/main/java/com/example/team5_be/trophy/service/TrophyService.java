@@ -1,6 +1,5 @@
 package com.example.team5_be.trophy.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.team5_be.habit.dao.HabitRelationshipRepository;
 import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.habit.domain.entity.HabitRelationshipEntity;
-import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 import com.example.team5_be.trophy.dao.TrophyRepository;
 import com.example.team5_be.trophy.domain.dto.TrophyDTO;
@@ -31,19 +29,25 @@ public class TrophyService {
     // 미션 완료 시 트로피 지급 (트로피를 DB에 새로 생성)
     @Transactional
     public boolean awardTrophy(String userId, Integer habitId) {
+        
+        System.out.println(">>> awardTrophy 실행");
+        System.out.println("userId = " + userId);
+        System.out.println("habitId = " + habitId);
+        
+        
         // 1. HabitRelationship 조회
         HabitRelationshipEntity hr = habitRelRepo.findById_UserIdAndId_HabitId(userId, habitId)
                 .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
 
         // 2. 완료 여부 확인
-        if (!hr.getStatus().getStatusName().equals("COMPLETED")) {
+        if (hr.getStatus().getStatusId() != 3) {
             return false; // 완료 X → 트로피 지급 안함
         }
 
         HabitEntity habit = hr.getHabit();
         UserEntity user = hr.getUser();
 
-        // 3. 트로피 존재 확인
+        // 3. 트로피 존재 확인하고 없으면 새 트로피 생성
         TrophyEntity trophy = trophyRepo.findByHabit(habit)
                 .orElseGet(() -> {
                     TrophyEntity newTrophy = TrophyEntity.builder()
@@ -53,7 +57,7 @@ public class TrophyService {
                     return trophyRepo.save(newTrophy);
                 });
 
-        // 4. 이미 지급 여부 확인
+        // 4. 해당 트로피가 유저에게 이미 지급됬는지 여부 확인
         boolean alreadyAwarded = trophyRelRepo.existsByUser_UserIdAndTrophy_TrophyId(user.getUserId(), trophy.getTrophyId());
         if (alreadyAwarded) return false;
 
