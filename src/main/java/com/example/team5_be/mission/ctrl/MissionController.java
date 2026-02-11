@@ -119,7 +119,7 @@ public class MissionController {
     )
     @Operation(
         summary = "미션 수정",
-        description = "미션 아이디를 이용한 수정"
+        description = "MissionID를 가진 Mission의 Name, Definition을 수정한다."
     )
     @PutMapping("/update/{missionId}")
     public ResponseEntity<MissionResponseDTO> update(@PathVariable("missionId") Integer missionId, @RequestBody MissionRequestDTO request) {
@@ -130,6 +130,30 @@ public class MissionController {
         if(response != null)    return ResponseEntity.status(HttpStatus.OK).body(response);             // 200
         else                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);    // 400
     }
+
+    // 미션 레벨업 업데이트
+    // @ApiResponses(
+    //     {
+    //         @ApiResponse(
+    //             responseCode="200", 
+    //             description="미션 레벨업 수정 성공",
+    //             content = @Content(schema = @Schema(implementation = MissionResponseDTO.class))),
+    //         @ApiResponse(responseCode="400" , description="미션 레벨업 수정 실패")
+    //     }
+    // )
+    // @Operation(
+    //     summary = "미션 레벨업 수정",
+    //     description = "해당 MissionID를 가진 Mission이 레벨업을 위한 수정이다."
+    // )
+    // @PutMapping("/levelup/{missionId}")
+    // public ResponseEntity<MissionResponseDTO> levelUpUpdate(@PathVariable("missionId") Integer missionId, @RequestBody MissionRequestDTO request) {
+    //     System.out.println(">>>> mission ctrl levelUp check");
+
+    //     MissionResponseDTO response = missionService.levelUpUpdate(missionId, request);
+
+    //     if(response != null)    return ResponseEntity.status(HttpStatus.OK).body(response);             // 200
+    //     else                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);    // 400
+    // }
 
 
     // 미션 삭제

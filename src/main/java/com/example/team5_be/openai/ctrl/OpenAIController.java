@@ -35,7 +35,7 @@ public class OpenAIController {
     )
     @GetMapping("/recommend/mission")
     public MissionRecommendationResponseDTO recommendMission(
-        @RequestParam Long habitId,
+        @RequestParam Integer habitId,
         @RequestParam String userId
     ) {
         return openAIService.recommendMission(habitId, userId);

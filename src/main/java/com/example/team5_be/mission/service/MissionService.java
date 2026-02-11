@@ -18,6 +18,7 @@ import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.dao.StatusRepository;
 import com.example.team5_be.status.domain.entity.StatusEntity;
 import com.example.team5_be.user.dao.UserRepository;
+import com.example.team5_be.user.domain.entity.UserEntity;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,10 @@ public class MissionService {
     private final StatusRepository statusRepository;
     private final HabitRepository habitRepository;
     private final UserRepository userRepository;
+
+    private static final int LEVEL_UP_DAYS = 60;
+    private static final String STATUS_IN_PROGRESS_NAME = "진행 중";
+    private static final String MODE_LEVEL_UP_NAME = "레벨업";
 
 
     /*
@@ -57,21 +62,30 @@ public class MissionService {
         ModeEntity mode = modeRepository.findById(request.getModeId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid modeId: " + request.getModeId()));
 
-        StatusEntity status = statusRepository.findById(request.getStatusId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid statusId: " + request.getStatusId()));
+        StatusEntity status = statusRepository.findByStatusName(STATUS_IN_PROGRESS_NAME)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_IN_PROGRESS_NAME));
         
         HabitEntity habit = habitRepository.findById(request.getHabitId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid habitId: " + request.getHabitId()));
 
+        UserEntity user = userRepository.findById(request.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + request.getUserId()));
+
         LocalDate startDate = LocalDate.now();
 
-        if (level.getLevelDate() == null) {
-            throw new IllegalArgumentException("Level duration is missing for levelId: " + request.getLevelId());
+        LocalDate endDate;
+        if (MODE_LEVEL_UP_NAME.equals(mode.getModeName())) {
+            endDate = startDate.plusDays(LEVEL_UP_DAYS);
+        } else {
+            if (level.getLevelDate() == null) {
+                throw new IllegalArgumentException("Level duration is missing for levelId: " + request.getLevelId());
+            }
+            endDate = startDate.plusDays(level.getLevelDate());
         }
-        LocalDate endDate = startDate.plusDays(level.getLevelDate());
 
         MissionEntity entity = missionRepository.save(
                                     MissionEntity.builder()
+                                            .user(user)
                                             .habit(habit)
                                             .mode(mode)
                                             .level(level)
@@ -110,23 +124,39 @@ public class MissionService {
     }
 
 
-    // 미션 업데이트
     @Transactional
     public MissionResponseDTO update(Integer missionId, MissionRequestDTO request) {
-        System.out.println(">>>> Entered mission service : update");
         MissionEntity entity = missionRepository.findById(missionId)
-                                .orElseThrow(() -> new RuntimeException("read fail"));
-        
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
+        LevelEntity level = entity.getLevel();
+        LocalDate endDate = entity.getMissionEndDate();
+
+        if (request.getLevelId() != null) {
+            LevelEntity newLevel = levelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
+            level = newLevel;
+            endDate = entity.getMissionStartDate().plusDays(newLevel.getLevelDate());
+        }
+
         MissionEntity updated = MissionEntity.builder()
-                                .missionId(entity.getMissionId())
-                                .missionName(request.getMissionName())
-                                .missionDefinition(request.getMissionDefinition())
-                                .build();
+                .missionId(entity.getMissionId())
+                .user(entity.getUser())
+                .habit(entity.getHabit())
+                .mode(entity.getMode())
+                .level(level)
+                .status(entity.getStatus())
+                .missionName(request.getMissionName())
+                .missionDefinition(request.getMissionDefinition())
+                .missionStartDate(entity.getMissionStartDate())
+                .missionEndDate(endDate)
+                .build();
+
         missionRepository.save(updated);
-        MissionResponseDTO response = MissionResponseDTO.fromEntity(updated);
-                                        
-        return response ;
-    } 
+        return MissionResponseDTO.fromEntity(updated);
+    }
+
+    
     
 
     // 미션 삭제
