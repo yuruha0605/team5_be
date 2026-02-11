@@ -37,6 +37,7 @@ public class MissionService {
     private static final int LEVEL_UP_DAYS = 60;
     private static final String STATUS_IN_PROGRESS_NAME = "진행 중";
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
+    private static final String LEVEL_UP_DEFAULT_LEVEL_NAME = "레벨 1";
 
 
     /*
@@ -56,11 +57,20 @@ public class MissionService {
     public MissionResponseDTO create(MissionRequestDTO request) {
         System.out.println(">>>> Entered mission service : create");
 
-        LevelEntity level = levelRepository.findById(request.getLevelId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
-
         ModeEntity mode = modeRepository.findById(request.getModeId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid modeId: " + request.getModeId()));
+
+        LevelEntity level;
+        if (MODE_LEVEL_UP_NAME.equals(mode.getModeName())) {
+            level = levelRepository.findByLevelName(LEVEL_UP_DEFAULT_LEVEL_NAME)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid levelName: " + LEVEL_UP_DEFAULT_LEVEL_NAME));
+        } else {
+            if (request.getLevelId() == null) {
+                throw new IllegalArgumentException("levelId is required for mode: " + mode.getModeName());
+            }
+            level = levelRepository.findById(request.getLevelId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
+        }
 
         StatusEntity status = statusRepository.findByStatusName(STATUS_IN_PROGRESS_NAME)
             .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_IN_PROGRESS_NAME));
@@ -100,6 +110,10 @@ public class MissionService {
     }
 
 
+
+
+
+    
     // 미션 ID 단건 조회
     @Transactional
     public MissionResponseDTO read(Integer missionId) {
@@ -132,7 +146,7 @@ public class MissionService {
         LevelEntity level = entity.getLevel();
         LocalDate endDate = entity.getMissionEndDate();
 
-        if (request.getLevelId() != null) {
+        if (request.getLevelId() != null && !MODE_LEVEL_UP_NAME.equals(entity.getMode().getModeName())) {
             LevelEntity newLevel = levelRepository.findById(request.getLevelId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
             level = newLevel;
