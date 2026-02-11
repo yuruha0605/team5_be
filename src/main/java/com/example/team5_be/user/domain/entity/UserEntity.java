@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
+import com.example.team5_be.habit.domain.entity.HabitRelationshipEntity;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.trophy.domain.entity.TrophyRelationshipEntity;
 

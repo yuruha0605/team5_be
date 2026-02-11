@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MyPageService {
+public class MyInfoService {
     
     private final UserRepository userRepository ;
     private final PasswordEncoder passwordEncoder;
