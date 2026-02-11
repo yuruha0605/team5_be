@@ -9,11 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.team5_be.habit.dao.HabitRelationshipRepository;
 import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.habit.domain.entity.HabitRelationshipEntity;
-<<<<<<< HEAD
-=======
-import com.example.team5_be.habit.domain.dto.HabitStatus;
-import com.example.team5_be.mission.domain.entity.MissionEntity;
->>>>>>> 17a0105d27d22de366d9664f2ddcbce1ed2e95a9
 import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 import com.example.team5_be.trophy.dao.TrophyRepository;
 import com.example.team5_be.trophy.domain.dto.TrophyDTO;
