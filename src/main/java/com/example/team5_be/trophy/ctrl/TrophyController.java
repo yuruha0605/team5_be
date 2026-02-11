@@ -26,7 +26,7 @@ public class TrophyController {
 
     // 습관 완료 → 트로피 지급
     @PostMapping("/award/{habitId}")
-    public ResponseEntity<String> awardTrophy(@PathVariable Long habitId,
+    public ResponseEntity<String> awardTrophy(@PathVariable Integer habitId,
                                           @AuthenticationPrincipal String userId) {
         boolean awarded = trophyService.awardTrophy(userId, habitId);
         if (awarded) {

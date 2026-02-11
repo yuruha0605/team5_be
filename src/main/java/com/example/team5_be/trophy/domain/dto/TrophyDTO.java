@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TrophyDTO {
     
-    private Long trophyId;
+    private Integer trophyId;
 
     private String trophyName;
 
     // Habit 정보 중 필요한 것만 담기
-    private Long habitId;
+    private Integer habitId;
     private String habitName;
 
     public TrophyDTO toDTO(TrophyEntity trophy) {

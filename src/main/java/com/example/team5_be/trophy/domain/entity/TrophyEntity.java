@@ -28,7 +28,7 @@ public class TrophyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trophyId;
+    private Integer trophyId;
 
     @Column(nullable = false)
     private String trophyName;

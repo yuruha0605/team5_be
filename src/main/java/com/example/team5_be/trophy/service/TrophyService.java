@@ -30,7 +30,7 @@ public class TrophyService {
 
     // 미션 완료 시 트로피 지급 (트로피를 DB에 새로 생성)
     @Transactional
-    public boolean awardTrophy(String userId, Long habitId) {
+    public boolean awardTrophy(String userId, Integer habitId) {
         // 1. HabitRelationship 조회
         HabitRelationshipEntity hr = habitRelRepo.findById_UserIdAndId_HabitId(userId, habitId)
                 .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
