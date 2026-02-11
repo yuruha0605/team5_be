@@ -8,9 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HabitDetailResponseDTO {
-    private Long habitId;
-    private Long tagId;
-    private Long styleId;
+    private Integer habitId;
+    private Integer tagId;
+    private Integer styleId;
 
     private String habitName;
     private String habitDefinition;

@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
+import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.domain.entity.StatusEntity;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "MISSION_TBL")
+@Table(name = "mission_tbl")
 @Builder
 @Getter
 @NoArgsConstructor
@@ -49,19 +50,19 @@ public class MissionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mission_id")
     private Integer missionId;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "mission_name", nullable = false, length = 100)
     private String missionName;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "mission_definition", nullable = false, length = 500)
     private String missionDefinition;
 
-
-    @Column(nullable = false)
+    @Column(name = "mission_start_date", nullable = false)
     private LocalDate missionStartDate;
 
-    @Column(nullable = false)
+    @Column(name = "mission_end_date", nullable = false)
     private LocalDate missionEndDate;
 
 
@@ -69,9 +70,9 @@ public class MissionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    // @JoinColumn(name = "habitId", nullable = false)
-    // private HabitEntity habit;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "habit_id", nullable = false)
+    private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mode_id", nullable = false)
@@ -88,8 +89,5 @@ public class MissionEntity {
     @OneToMany(mappedBy = "mission", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
-
-
-    
     
 }

@@ -8,30 +8,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.team5_be.user.domain.dto.MyPageResponseDTO;
-import com.example.team5_be.user.domain.dto.MyPageUpdateRequestDTO;
-import com.example.team5_be.user.service.MyPageService;
+import com.example.team5_be.user.domain.dto.MyInfoResponseDTO;
+import com.example.team5_be.user.domain.dto.MyInfoUpdateRequestDTO;
+import com.example.team5_be.user.service.MyInfoService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class MyPageController {
-    
-    private final MyPageService myPageService;
+public class MyInfoController {
+    private final MyInfoService myInfoService;
 
     @GetMapping("/me")
-    public ResponseEntity<MyPageResponseDTO> getMyPage(
+    public ResponseEntity<MyInfoResponseDTO> getMyPage(
             @AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(myPageService.getMyPage(userId));
+        return ResponseEntity.ok(myInfoService.getMyPage(userId));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MyPageResponseDTO> updateMyPage(
+    public ResponseEntity<MyInfoResponseDTO> updateMyPage(
             @AuthenticationPrincipal String userId,
-            @RequestBody MyPageUpdateRequestDTO dto) {
+            @RequestBody MyInfoUpdateRequestDTO dto) {
         
-        return ResponseEntity.ok(myPageService.updateMyPage(userId, dto));
+        return ResponseEntity.ok(myInfoService.updateMyPage(userId, dto));
     }
 }

@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HabitCreateResponseDTO {
-    private Long habitId;
+    private Integer habitId;
     private String message; // "HABIT_CREATED"
 }

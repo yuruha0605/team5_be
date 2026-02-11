@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.team5_be.habit.dao.HabitRepository;
+import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.dao.LevelRepository;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mission.dao.MissionRepository;
@@ -28,7 +30,7 @@ public class MissionService {
     private final LevelRepository levelRepository;
     private final ModeRepository modeRepository;
     private final StatusRepository statusRepository;
-    //private final HabitRepository habitRepository;
+    private final HabitRepository habitRepository;
     private final UserRepository userRepository;
 
 
@@ -57,6 +59,9 @@ public class MissionService {
 
         StatusEntity status = statusRepository.findById(request.getStatusId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid statusId: " + request.getStatusId()));
+        
+        HabitEntity habit = habitRepository.findById(request.getHabitId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid habitId: " + request.getHabitId()));
 
         LocalDate startDate = LocalDate.now();
 
@@ -67,7 +72,7 @@ public class MissionService {
 
         MissionEntity entity = missionRepository.save(
                                     MissionEntity.builder()
-                                            //.habit(null)
+                                            .habit(habit)
                                             .mode(mode)
                                             .level(level)
                                             .status(status)
@@ -135,6 +140,12 @@ public class MissionService {
         missionRepository.deleteById(entity.getMissionId());
         
         return true ;
+    }
+
+    @Transactional
+    public MissionEntity findById(Integer missionId) {
+        return missionRepository.findById(missionId)
+                .orElseThrow(() -> new RuntimeException("Mission not found"));
     }
     
 }

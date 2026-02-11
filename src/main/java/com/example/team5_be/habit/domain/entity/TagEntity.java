@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tag")
+@Table(name = "TAG_TBL")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,7 +14,7 @@ public class TagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private Long tagId;
+    private Integer tagId;
 
     @Column(name = "tag_name", nullable = false)
     private String tagName;

@@ -35,7 +35,7 @@ public class HabitService {
     }
 
     // 2) 습관 단건 조회: GET /habits/{habitId}
-    public HabitDetailResponseDTO getHabitDetail(Long habitId, String loginUserIdOrNull) {
+    public HabitDetailResponseDTO getHabitDetail(Integer habitId, String loginUserIdOrNull) {
         HabitEntity habit = habitRepository.findById(habitId)
                 .orElseThrow(() -> new EntityNotFoundException("Habit not found: " + habitId));
 
@@ -66,7 +66,7 @@ public class HabitService {
     }
 
     // 3) 태그별 전체 습관 목록: GET /habit?tagId=
-    public HabitListResponseDTO getHabitsByTag(Long tagId, String loginUserIdOrNull) {
+    public HabitListResponseDTO getHabitsByTag(Integer tagId, String loginUserIdOrNull) {
         tagRepository.findById(tagId)
                 .orElseThrow(() -> new EntityNotFoundException("Tag not found: " + tagId));
 
@@ -136,7 +136,7 @@ public class HabitService {
 
     // 5) 습관 참여: POST /habits/{habitId}/join
     @Transactional
-    public HabitJoinResponseDTO joinHabit(Long habitId, String loginUserId) {
+    public HabitJoinResponseDTO joinHabit(Integer habitId, String loginUserId) {
         if (loginUserId == null) throw new IllegalStateException("Login required");
 
         HabitEntity habit = habitRepository.findById(habitId)
@@ -172,7 +172,7 @@ public class HabitService {
 
     // 6) 참여 습관 수정: PATCH /habits/{habitId}/join
     @Transactional
-    public HabitJoinResponseDTO updateJoin(Long habitId, String loginUserId, HabitJoinUpdateRequestDTO req) {
+    public HabitJoinResponseDTO updateJoin(Integer habitId, String loginUserId, HabitJoinUpdateRequestDTO req) {
         if (loginUserId == null) throw new IllegalStateException("Login required");
         if (req == null || req.getStatus() == null) throw new IllegalArgumentException("status is required");
 
@@ -193,7 +193,7 @@ public class HabitService {
 
     // 7) 참여 습관 삭제: DELETE /habits/{habitId}/join
     @Transactional
-    public HabitUnJoinResponseDTO unjoinHabit(Long habitId, String loginUserId) {
+    public HabitUnJoinResponseDTO unjoinHabit(Integer habitId, String loginUserId) {
         if (loginUserId == null) throw new IllegalStateException("Login required");
 
         if (!habitRelationshipRepository.existsById_UserIdAndId_HabitId(loginUserId, habitId)) {
