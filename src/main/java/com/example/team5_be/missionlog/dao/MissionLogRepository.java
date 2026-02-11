@@ -16,4 +16,6 @@ public interface MissionLogRepository extends JpaRepository<MissionLogEntity, Lo
     List<MissionLogEntity> findByMission_MissionIdInAndCheckDateBetween(List<Integer> missionIds, LocalDate startDate, LocalDate endDate);
 
     List<MissionLogEntity> findByMission_MissionIdInAndCheckDate(List<Integer> missionIds, LocalDate checkDate);
+
+    long countByMission_MissionIdAndCheckDateBetweenAndIsCheckedTrue(Integer missionId, LocalDate startDate, LocalDate endDate);
 }

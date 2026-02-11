@@ -6,28 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
-import com.example.team5_be.trophy.domain.entity.TrophyEntity;
+
 import com.example.team5_be.trophy.domain.entity.TrophyRelationshipEntity;
-import com.example.team5_be.user.domain.entity.UserEntity;
+
+
+import io.lettuce.core.dynamic.annotation.Param;
 
 @Repository
 public interface TrophyRelationshipRepository extends JpaRepository<TrophyRelationshipEntity, Integer> {
-    boolean existsByUserAndTrophy(UserEntity user, TrophyEntity trophy);
+    @Query("SELECT tr FROM TrophyRelationshipEntity tr JOIN FETCH tr.trophy t JOIN FETCH t.habit h WHERE tr.user.userId = :userId")
+    List<TrophyRelationshipEntity> findAllByUserId(@Param("userId") String userId);
 
-    List<TrophyRelationshipEntity> findAllByUser(UserEntity user);
-
-    @Query("""
-    select new com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO(
-        0,
-        tr.user.userId,
-        tr.user.userName,
-        null,
-        count(tr.id)
-    )
-    from TrophyRelationshipEntity tr
-    group by tr.user.userId, tr.user.userName
-    order by count(tr.id) desc
-    """)
-    List<DashBoardRowDTO> findRankingByTrophyCount();
+    boolean existsByUser_UserIdAndTrophy_TrophyId(String userId, Integer trophyId);
 }

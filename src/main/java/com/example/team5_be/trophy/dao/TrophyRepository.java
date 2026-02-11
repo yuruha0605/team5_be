@@ -12,3 +12,4 @@ import com.example.team5_be.trophy.domain.entity.TrophyEntity;
 public interface TrophyRepository extends JpaRepository<TrophyEntity, Integer> {
     Optional<TrophyEntity> findByHabit(HabitEntity habit);
 }
+

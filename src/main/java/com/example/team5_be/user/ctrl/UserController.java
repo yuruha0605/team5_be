@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.team5_be.user.domain.dto.ResetPasswordRequestDTO;
 import com.example.team5_be.user.domain.dto.UserRequestDTO;
 import com.example.team5_be.user.domain.dto.UserResponseDTO;
 import com.example.team5_be.user.domain.entity.UserEntity;
@@ -80,7 +81,7 @@ public class UserController {
 
     //로그아웃
     @PostMapping("/logout")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "BearerAuth")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorization){
         System.out.println(">>> user service logout header : "+authorization);
         String accessToken = authorization.replace("Bearer ", "");
@@ -109,12 +110,12 @@ public class UserController {
 
     // 비밀번호 재설정
     @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestParam String userId,
-                                                @RequestParam String newPassword) {
-        UserEntity user = userService.findById(userId);
-        userService.updatePassword(user, newPassword);
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequestDTO request) {
+        UserEntity user = userService.findById(request.getUserId());
+        userService.updatePassword(user, request.getNewPassword());
         return ResponseEntity.ok("Password updated successfully.");
     }
+
      
 
 }

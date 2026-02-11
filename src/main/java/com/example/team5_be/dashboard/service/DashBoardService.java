@@ -1,71 +1,75 @@
-package com.example.team5_be.dashboard.service;
+// package com.example.team5_be.dashboard.service;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 
-import org.springframework.stereotype.Service;
+// import org.springframework.stereotype.Service;
 
-import com.example.team5_be.dashboard.dao.DashBoardRepository;
-import com.example.team5_be.dashboard.domain.dto.DashBoardResponseDTO;
-import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
-import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+// import com.example.team5_be.dashboard.dao.DashBoardRepository;
+// import com.example.team5_be.dashboard.domain.dto.DashBoardResponseDTO;
+// import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
+// import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class DashBoardService {
 
-    private final DashBoardRepository dashboardRepository;
-    private final TrophyRelationshipRepository trophyRepository;
+// import jakarta.transaction.Transactional;
+// import lombok.RequiredArgsConstructor;
 
-    public DashBoardResponseDTO getRankings(String sort, Integer limit, Integer offset) {
+// @Service
+// @RequiredArgsConstructor
+// @Transactional
+// public class DashBoardService {
 
-        String safeSort = (sort == null || sort.isBlank())
-                ? "TOTAL_SCORE"
-                : sort.toUpperCase();
 
-        int safeLimit = (limit == null || limit <= 0) ? 20 : limit;
-        int safeOffset = (offset == null || offset < 0) ? 0 : offset;
+//     private final DashBoardRepository dashboardRepository;
+//     private final DashBoardTrophyRepository trophyRepository;
 
-        List<DashBoardRowDTO> allRows;
 
-        if ("TROPHY_COUNT".equals(safeSort)) {
-            allRows = trophyRepository.findRankingByTrophyCount();
-        } else {
-            allRows = dashboardRepository.findRankingByTotalScore();
-            safeSort = "TOTAL_SCORE";
-        }
+//     public DashBoardResponseDTO getRankings(String sort, Integer limit, Integer offset) {
 
-        // offset / limit 자르기
-        int fromIndex = Math.min(safeOffset, allRows.size());
-        int toIndex = Math.min(safeOffset + safeLimit, allRows.size());
-        List<DashBoardRowDTO> slicedRows = allRows.subList(fromIndex, toIndex);
+//         String safeSort = (sort == null || sort.isBlank())
+//                 ? "TOTAL_SCORE"
+//                 : sort.toUpperCase();
 
-        List<DashBoardRowDTO> rankedRows = applyRank(safeOffset, slicedRows);
+//         int safeLimit = (limit == null || limit <= 0) ? 20 : limit;
+//         int safeOffset = (offset == null || offset < 0) ? 0 : offset;
 
-        return DashBoardResponseDTO.builder()
-                .sort(safeSort)
-                .limit(safeLimit)
-                .offset(safeOffset)
-                .items(rankedRows)
-                .build();
-    }
+//         List<DashBoardRowDTO> allRows;
 
-    private List<DashBoardRowDTO> applyRank(int offset, List<DashBoardRowDTO> rows) {
-        List<DashBoardRowDTO> result = new ArrayList<>(rows.size());
-        for (int i = 0; i < rows.size(); i++) {
-            DashBoardRowDTO r = rows.get(i);
-            result.add(DashBoardRowDTO.builder()
-                    .rank(offset + i + 1)
-                    .userId(r.getUserId())
-                    .userName(r.getUserName())
-                    .totalScore(r.getTotalScore())
-                    .trophyCount(r.getTrophyCount())
-                    .build());
-        }
-        return result;
-    }
-}
+//         if ("TROPHY_COUNT".equals(safeSort)) {
+//             allRows = trophyRepository.findRankingByTrophyCount();
+//         } else {
+//             allRows = dashboardRepository.findRankingByTotalScore();
+//             safeSort = "TOTAL_SCORE";
+//         }
+
+//         // offset / limit 자르기
+//         int fromIndex = Math.min(safeOffset, allRows.size());
+//         int toIndex = Math.min(safeOffset + safeLimit, allRows.size());
+//         List<DashBoardRowDTO> slicedRows = allRows.subList(fromIndex, toIndex);
+
+//         List<DashBoardRowDTO> rankedRows = applyRank(safeOffset, slicedRows);
+
+//         return DashBoardResponseDTO.builder()
+//                 .sort(safeSort)
+//                 .limit(safeLimit)
+//                 .offset(safeOffset)
+//                 .items(rankedRows)
+//                 .build();
+//     }
+
+//     private List<DashBoardRowDTO> applyRank(int offset, List<DashBoardRowDTO> rows) {
+//         List<DashBoardRowDTO> result = new ArrayList<>(rows.size());
+//         for (int i = 0; i < rows.size(); i++) {
+//             DashBoardRowDTO r = rows.get(i);
+//             result.add(DashBoardRowDTO.builder()
+//                     .rank(offset + i + 1)
+//                     .userId(r.getUserId())
+//                     .userName(r.getUserName())
+//                     .totalScore(r.getTotalScore())
+//                     .trophyCount(r.getTrophyCount())
+//                     .build());
+//         }
+//         return result;
+//     }
+// }

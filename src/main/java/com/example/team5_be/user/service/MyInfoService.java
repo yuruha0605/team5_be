@@ -45,6 +45,4 @@ public class MyInfoService {
 
         return MyInfoResponseDTO.from(user);
     }
-
-
 }

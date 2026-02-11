@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class TrophyDTO {
     
     private Integer trophyId;
+
     private String trophyName;
 
     // Habit 정보 중 필요한 것만 담기
@@ -21,11 +22,11 @@ public class TrophyDTO {
     private String habitName;
 
     public TrophyDTO toDTO(TrophyEntity trophy) {
-        return TrophyDTO.builder()
-                .trophyId(trophy.getTrophyId())
-                .trophyName(trophy.getTrophyName())
-                .habitId(trophy.getHabit().getHabitId())
-                .habitName(trophy.getHabit().getHabitName())
-                .build();
-    }
+    return TrophyDTO.builder()
+            .trophyId(trophy.getTrophyId())
+            .trophyName(trophy.getTrophyName())
+            .habitId(trophy.getHabit().getHabitId())
+            .habitName(trophy.getHabit().getHabitName())
+            .build();
+}
 }
