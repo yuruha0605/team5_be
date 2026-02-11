@@ -51,7 +51,7 @@ public class MissionController {
         summary = "미션 생성(등록)",
         description = "미션 생성(등록)을 수행합니다. 로그인 유저 기준으로 생성되며, 습관ID와 모드ID는 필수입니다. 상태는 기본값으로 '진행 중'으로 설정됩니다. 레벨은 모드에 따라, 레벨업의 경우 어떤 입력이 없어도 레벨1이 설정되며 자율선택 모드일 경우 사용자가 직접 입력해야 합니다."
     )
-    @PostMapping("/me/register")
+    @PostMapping("/register")
     public ResponseEntity<MissionResponseDTO> createForUser(
             Authentication authentication,
             @RequestBody MissionRequestDTO request) {
@@ -82,7 +82,7 @@ public class MissionController {
         summary = "로그인 유저 미션 단건 조회",
         description = "로그인된 유저의 미션만 조회합니다."
     )
-    @GetMapping("/me/read/{missionId}")
+    @GetMapping("/read/{missionId}")
     public ResponseEntity<MissionResponseDTO> readMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId) {
