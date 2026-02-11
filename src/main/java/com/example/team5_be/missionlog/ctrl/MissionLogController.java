@@ -6,14 +6,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.CalendarMonthResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.DailyMissionListResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.MissionLogRequestDTO;
@@ -67,13 +66,18 @@ public class MissionLogController {
     )
     @Operation(
         summary = "월간 스탬프 조회",
-        description = "특정 사용자의 월간 미션 스탬프 데이터를 조회합니다."
+        description = "로그인한 사용자의 월간 미션 스탬프 데이터를 조회합니다."
     )
-    @GetMapping("/calendar/{userId}")
+    @GetMapping("/calendar")
     public ResponseEntity<CalendarMonthResponseDTO> getMonthStamps(
-            @PathVariable("userId") String userId,
+            Authentication authentication,
             @RequestParam("month") String month) {
-        return ResponseEntity.status(HttpStatus.OK).body(missionLogService.getMonthStamps(userId, month));
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(missionLogService.getMonthStamps(authentication.getName(), month));
     }
 
 
@@ -89,12 +93,17 @@ public class MissionLogController {
     )
     @Operation(
         summary = "일간 미션 조회",
-        description = "특정 사용자의 특정 일자의 미션 목록을 조회합니다."
+        description = "로그인한 사용자의 특정 일자의 미션 목록을 조회합니다."
     )
-    @GetMapping("/daily/{userId}")
+    @GetMapping("/daily")
     public ResponseEntity<DailyMissionListResponseDTO> getDailyMissions(
-            @PathVariable("userId") String userId,
+            Authentication authentication,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.status(HttpStatus.OK).body(missionLogService.getDailyMissions(userId, date));
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(missionLogService.getDailyMissions(authentication.getName(), date));
     }
 }

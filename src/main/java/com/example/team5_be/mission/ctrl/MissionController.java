@@ -109,7 +109,7 @@ public class MissionController {
         summary = "로그인 유저 미션 목록 조회",
         description = "로그인된 유저의 미션 목록을 조회합니다."
     )
-    @GetMapping("/me/list")
+    @GetMapping("/list")
     public ResponseEntity<List<MissionResponseDTO>> listMyMissions(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -134,7 +134,7 @@ public class MissionController {
         summary = "로그인 유저 미션 제목 검색",
         description = "로그인된 유저의 미션을 키워드로 부분 검색합니다."
     )
-    @GetMapping("/me/search")
+    @GetMapping("/search")
     public ResponseEntity<List<MissionResponseDTO>> searchMyMissionsByName(
             Authentication authentication,
             @RequestParam("keyword") String keyword) {
@@ -160,7 +160,7 @@ public class MissionController {
         summary = "로그인 유저 미션 수정",
         description = "로그인된 유저의 미션만 수정합니다."
     )
-    @PutMapping("/me/update/{missionId}")
+    @PutMapping("/update/{missionId}")
     public ResponseEntity<MissionResponseDTO> updateMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId,
@@ -187,7 +187,7 @@ public class MissionController {
         summary = "로그인 유저 미션 삭제",
         description = "로그인된 유저의 미션만 삭제합니다."
     )
-    @DeleteMapping("/me/delete/{missionId}")
+    @DeleteMapping("/delete/{missionId}")
     public ResponseEntity<Boolean> deleteMyMission(
             Authentication authentication,
             @PathVariable("missionId") Integer missionId) {
