@@ -6,11 +6,12 @@ import java.util.List;
 
 
 import com.example.team5_be.comment.domain.entity.CommentEntity;
-import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.domain.entity.LevelEntity;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.domain.entity.StatusEntity;
-import com.example.team5_be.user.domain.entity.UserEntity;
+import com.example.team5_be.user.domain.entity.UserEntity; 
+import com.example.team5_be.habit.domain.entity.HabitEntity;  
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "mission_tbl")
+@Table(name = "MISSION_TBL")
 @Builder
 @Getter
 @NoArgsConstructor
@@ -50,19 +51,19 @@ public class MissionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mission_id")
     private Integer missionId;
 
-    @Column(name = "mission_name", nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     private String missionName;
 
-    @Column(name = "mission_definition", nullable = false, length = 500)
+    @Column(nullable = false, length = 500)
     private String missionDefinition;
 
-    @Column(name = "mission_start_date", nullable = false)
+
+    @Column(nullable = false)
     private LocalDate missionStartDate;
 
-    @Column(name = "mission_end_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate missionEndDate;
 
 
@@ -71,7 +72,7 @@ public class MissionEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "habit_id", nullable = false)
+    @JoinColumn(name = "habitId", nullable = false)
     private HabitEntity habit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -89,5 +90,8 @@ public class MissionEntity {
     @OneToMany(mappedBy = "mission", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 
+
+
+    
     
 }
