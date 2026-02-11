@@ -13,6 +13,8 @@ import com.example.team5_be.mission.domain.entity.MissionEntity;
 public interface MissionRepository extends JpaRepository<MissionEntity, Integer>{
     public Optional<MissionEntity> findByMissionName(String missionName);
     public List<MissionEntity> findByUser_UserId(String userId);
+    public List<MissionEntity> findByUser_UserIdAndMissionNameContainingIgnoreCase(String userId, String missionName);
+    public Optional<MissionEntity> findByMissionIdAndUser_UserId(Integer missionId, String userId);
 
     List<MissionEntity> findByUser_UserIdAndMissionStartDateLessThanEqualAndMissionEndDateGreaterThanEqual(
             String userId,

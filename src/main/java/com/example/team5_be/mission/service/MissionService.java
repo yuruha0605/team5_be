@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class MissionService {
-    private final MissionRepository missionRepository ;
+    private final MissionRepository missionRepository;
     private final LevelRepository levelRepository;
     private final ModeRepository modeRepository;
     private final StatusRepository statusRepository;
@@ -54,7 +54,7 @@ public class MissionService {
 
     // 미션 생성
     @Transactional
-    public MissionResponseDTO create(MissionRequestDTO request) {
+    public MissionResponseDTO createForUser(MissionRequestDTO request, String userId) {
         System.out.println(">>>> Entered mission service : create");
 
         ModeEntity mode = modeRepository.findById(request.getModeId())
@@ -78,8 +78,8 @@ public class MissionService {
         HabitEntity habit = habitRepository.findById(request.getHabitId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid habitId: " + request.getHabitId()));
 
-        UserEntity user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + request.getUserId()));
+        UserEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid userId: " + userId));
 
         LocalDate startDate = LocalDate.now();
 
@@ -125,6 +125,15 @@ public class MissionService {
         return response ;
     }
 
+    @Transactional
+    public MissionResponseDTO readForUser(Integer missionId, String userId) {
+        System.out.println(">>>> Entered mission service : readForUser");
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
+        return MissionResponseDTO.fromEntity(entity);
+    }
+
     // 한 유저의 모든 미션 조회
     @Transactional
     public List<MissionResponseDTO> list(String userId) {
@@ -137,10 +146,58 @@ public class MissionService {
         return responses ;
     }
 
+    @Transactional
+    public List<MissionResponseDTO> listForUser(String userId) {
+        return list(userId);
+    }
+
+    @Transactional
+    public List<MissionResponseDTO> searchByName(String userId, String keyword) {
+        System.out.println(">>>> Entered mission service : searchByName");
+        List<MissionEntity> entities = missionRepository
+                .findByUser_UserIdAndMissionNameContainingIgnoreCase(userId, keyword);
+
+        return entities.stream()
+                .map(MissionResponseDTO::fromEntity)
+                .toList();
+    }
+
 
     @Transactional
     public MissionResponseDTO update(Integer missionId, MissionRequestDTO request) {
         MissionEntity entity = missionRepository.findById(missionId)
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
+        LevelEntity level = entity.getLevel();
+        LocalDate endDate = entity.getMissionEndDate();
+
+        if (request.getLevelId() != null && !MODE_LEVEL_UP_NAME.equals(entity.getMode().getModeName())) {
+            LevelEntity newLevel = levelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
+            level = newLevel;
+            endDate = entity.getMissionStartDate().plusDays(newLevel.getLevelDate());
+        }
+
+        MissionEntity updated = MissionEntity.builder()
+                .missionId(entity.getMissionId())
+                .user(entity.getUser())
+                .habit(entity.getHabit())
+                .mode(entity.getMode())
+                .level(level)
+                .status(entity.getStatus())
+                .missionName(request.getMissionName())
+                .missionDefinition(request.getMissionDefinition())
+                .missionStartDate(entity.getMissionStartDate())
+                .missionEndDate(endDate)
+                .build();
+
+        missionRepository.save(updated);
+        return MissionResponseDTO.fromEntity(updated);
+    }
+
+    @Transactional
+    public MissionResponseDTO updateForUser(Integer missionId, MissionRequestDTO request, String userId) {
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
                 .orElseThrow(() -> new RuntimeException("read fail"));
 
         LevelEntity level = entity.getLevel();
@@ -184,6 +241,17 @@ public class MissionService {
         missionRepository.deleteById(entity.getMissionId());
         
         return true ;
+    }
+
+    @Transactional
+    public boolean deleteForUser(Integer missionId, String userId) {
+        System.out.println(">>>> Entered mission service : deleteForUser");
+
+        MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
+                .orElseThrow(() -> new RuntimeException("read fail"));
+
+        missionRepository.deleteById(entity.getMissionId());
+        return true;
     }
 
     @Transactional

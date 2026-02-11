@@ -64,7 +64,8 @@ public class SecurityConfig {
                         "/bashoard/**",
                         "/user/find",
                         "/user/resetpassword",
-                        "/openai/**"
+                        "/openai/**",
+                        "/me/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated() //인증필요한 엔드포인트
