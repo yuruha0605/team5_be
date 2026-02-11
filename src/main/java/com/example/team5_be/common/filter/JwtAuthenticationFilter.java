@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -56,7 +57,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         chain.doFilter(request, response);
         return;
-    }
+        }
+
+        if (endPoint.startsWith("/user/resetPassword")) {
+          
+            chain.doFilter(request, response);
+            return;
+        }
 
         // header , token 검증을 해서 통과 또는 리첵
         String authHeader = request.getHeader("Authorization");

@@ -24,7 +24,7 @@ public class TrophyRelationshipEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto-increment
-    private Long id; // 중간 테이블 PK용
+    private Integer id; // 중간 테이블 PK용
 
     @ManyToOne
     @JoinColumn(name="user_id")

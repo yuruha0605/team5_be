@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface HabitRelationshipRepository extends JpaRepository<HabitRelationshipEntity, HabitRelationshipId> {
 
-    boolean existsById_UserIdAndId_HabitId(String userId, Long habitId);
+    boolean existsById_UserIdAndId_HabitId(String userId, Integer habitId);
 
-    Optional<HabitRelationshipEntity> findById_UserIdAndId_HabitId(String userId, Long habitId);
+    Optional<HabitRelationshipEntity> findById_UserIdAndId_HabitId(String userId, Integer habitId);
 
-    void deleteById_UserIdAndId_HabitId(String userId, Long habitId);
+    void deleteById_UserIdAndId_HabitId(String userId, Integer habitId);
 }

@@ -17,7 +17,7 @@ public class HabitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "habit_id")
-    private Long habitId;
+    private Integer habitId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tag_id", nullable = false)

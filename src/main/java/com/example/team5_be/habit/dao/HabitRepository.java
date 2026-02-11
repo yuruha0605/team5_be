@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
-    List<HabitEntity> findAllByTag_TagId(Long tagId);
+public interface HabitRepository extends JpaRepository<HabitEntity, Integer> {
+    List<HabitEntity> findAllByTag_TagId(Integer tagId);
 }

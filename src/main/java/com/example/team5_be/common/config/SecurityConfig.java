@@ -53,6 +53,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) 
             .logout(logout -> logout.disable())   
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.POST, "/user/resetPassword").permitAll()
                 .requestMatchers(
             "/error",
                         "/swagger-ui/**",
@@ -60,7 +61,7 @@ public class SecurityConfig {
                         "/user/signup",
                         "/user/signin",
                         "/user/find",
-                        "/user/resetpassword",
+                        "/user/resetPassword",
                         "/openai/**"
                         ).permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

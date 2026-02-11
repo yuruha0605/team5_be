@@ -18,15 +18,15 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-    // 리포트 조회
-    @GetMapping
+    @GetMapping("/report")
     public ResponseEntity<ReportDTO> getMonthlyReport(
             @AuthenticationPrincipal String userId,
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
     ) {
         if (month == null) month = YearMonth.now();
-        ReportDTO report = myPageService.getMonthlyReport(userId, month);
+
+        ReportDTO report = myPageService.getReport(userId, month);
         return ResponseEntity.ok(report);
     }
 }

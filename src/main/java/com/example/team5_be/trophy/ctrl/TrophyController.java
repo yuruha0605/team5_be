@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.team5_be.trophy.domain.dto.TrophyDTO;
 import com.example.team5_be.trophy.service.TrophyService;
-
-import com.example.team5_be.user.domain.entity.UserEntity;
+import com.example.team5_be.user.dao.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,10 +22,11 @@ import lombok.RequiredArgsConstructor;
 public class TrophyController {
 
     private final TrophyService trophyService;
+    private final UserRepository userRepo;
 
     // 습관 완료 → 트로피 지급
     @PostMapping("/award/{habitId}")
-    public ResponseEntity<String> awardTrophy(@PathVariable Long habitId,
+    public ResponseEntity<String> awardTrophy(@PathVariable Integer habitId,
                                           @AuthenticationPrincipal String userId) {
         boolean awarded = trophyService.awardTrophy(userId, habitId);
         if (awarded) {
@@ -38,9 +38,8 @@ public class TrophyController {
 
     // 유저 트로피 진열장 조회
     @GetMapping("/display")
-    public ResponseEntity<List<TrophyDTO>> displayTrophies(@AuthenticationPrincipal UserEntity user) {
-        
-        List<TrophyDTO> trophies = trophyService.getUserTrophies(user);
+    public ResponseEntity<List<TrophyDTO>> displayTrophies(@AuthenticationPrincipal String userId) {
+        List<TrophyDTO> trophies = trophyService.getUserTrophies(userId);
         return ResponseEntity.ok(trophies);
     }
 }
