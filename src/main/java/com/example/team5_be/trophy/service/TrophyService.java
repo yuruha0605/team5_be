@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.team5_be.habit.dao.HabitRelationshipRepository;
 import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.habit.domain.entity.HabitRelationshipEntity;
+import com.example.team5_be.habit.domain.dto.HabitStatus;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
 import com.example.team5_be.trophy.dao.TrophyRepository;
@@ -36,7 +37,7 @@ public class TrophyService {
                 .orElseThrow(() -> new RuntimeException("HabitRelationship not found"));
 
         // 2. 완료 여부 확인
-        if (!hr.getStatus().getStatusName().equals("COMPLETED")) {
+        if (!HabitStatus.COMPLETED.getValue().equals(hr.getStatus().getStatusName())) {
             return false; // 완료 X → 트로피 지급 안함
         }
 
