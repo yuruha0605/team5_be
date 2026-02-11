@@ -54,7 +54,7 @@ public class TrophyService {
                 });
 
         // 4. 이미 지급 여부 확인
-        boolean alreadyAwarded = trophyRelRepo.existsByUserAndTrophy(user, trophy);
+        boolean alreadyAwarded = trophyRelRepo.existsByUser_UserIdAndTrophy_TrophyId(user.getUserId(), trophy.getTrophyId());
         if (alreadyAwarded) return false;
 
         // 5. 트로피 지급
@@ -69,14 +69,13 @@ public class TrophyService {
 
     // 획득한 트로피 진열장 조회
     @Transactional(readOnly = true)
-    public List<TrophyDTO> getUserTrophies(UserEntity user) {
-        List<TrophyRelationshipEntity> relList = trophyRelRepo.findAllByUser(user);
+    public List<TrophyDTO> getUserTrophies(String userId) {
+        List<TrophyRelationshipEntity> relList = trophyRelRepo.findAllByUserId(userId);
 
         return relList.stream()
                 .map(tr -> {
                     TrophyEntity trophy = tr.getTrophy();
                     HabitEntity habit = trophy.getHabit();
-
                     return TrophyDTO.builder()
                             .trophyId(trophy.getTrophyId())
                             .trophyName(trophy.getTrophyName())
