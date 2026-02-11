@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "habit_relationship")
+@Table(name = "HABIT_RELATIONSHIP_TBL")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -49,7 +49,7 @@ public class HabitRelationshipEntity {
         private String userId;
 
         @Column(name = "habit_id")
-        private Long habitId;
+        private Integer habitId;
 
         @Override
         public boolean equals(Object o) {

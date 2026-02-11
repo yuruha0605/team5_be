@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class HabitListResponseDTO {
-    private Long tagId;
+    private Integer tagId;
     private List<Item> habits;
 
     @Getter
@@ -19,8 +19,8 @@ public class HabitListResponseDTO {
     @AllArgsConstructor
     @Builder
     public static class Item {
-        private Long habitId;
-        private Long styleId;
+        private Integer habitId;
+        private Integer styleId;
 
         private String habitName;
         private String habitDefinition;

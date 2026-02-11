@@ -88,7 +88,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDTO> read(Integer missionId) {
-        System.out.println(">>>> blog service read"); 
+        System.out.println(">>>> comment service read"); 
         
         return commentRepository.findByMission_MissionId(missionId)
                                 .stream()

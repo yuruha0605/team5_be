@@ -5,10 +5,12 @@
 
 // import org.springframework.stereotype.Service;
 
+
 // import com.example.team5_be.dashboard.dao.DashBoardRepository;
-// import com.example.team5_be.dashboard.dao.DashBoardTrophyRepository;
 // import com.example.team5_be.dashboard.domain.dto.DashBoardResponseDTO;
 // import com.example.team5_be.dashboard.domain.dto.DashBoardRowDTO;
+// import com.example.team5_be.trophy.dao.TrophyRelationshipRepository;
+
 
 // import jakarta.transaction.Transactional;
 // import lombok.RequiredArgsConstructor;
@@ -18,8 +20,10 @@
 // @Transactional
 // public class DashBoardService {
 
+
 //     private final DashBoardRepository dashboardRepository;
 //     private final DashBoardTrophyRepository trophyRepository;
+
 
 //     public DashBoardResponseDTO getRankings(String sort, Integer limit, Integer offset) {
 

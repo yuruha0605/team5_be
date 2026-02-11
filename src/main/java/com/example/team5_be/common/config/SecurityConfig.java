@@ -59,6 +59,9 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/user/signup",
                         "/user/signin",
+                        "/comments/**",
+                        "/missions/**",
+                        "/bashoard/**",
                         "/user/find",
                         "/user/resetpassword",
                         "/openai/**"

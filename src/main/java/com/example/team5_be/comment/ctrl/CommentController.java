@@ -56,8 +56,8 @@ public class CommentController {
         @Parameter(description = "mission ID" , example = "1") 
         @PathVariable("missionId") Integer missionId) {
 
-        System.out.println(">>>> Mission ctrl path : /read"); 
-        System.out.println(">>>> params missionId : "+ missionId); 
+        System.out.println(">>>> comment ctrl path : /read"); 
+        System.out.println(">>>> params : "+ missionId); 
 
         List<CommentResponseDTO> response = commentService.read(missionId) ;
         if( response != null) {
@@ -91,6 +91,9 @@ public class CommentController {
 
         System.out.println(">>>> mission / comment  ctrl path : /write"); 
         System.out.println(">>>> params : "+ request); 
+        System.out.println(">>>> title   : " + request.getTitle());
+        System.out.println(">>>> content : " + request.getContent());
+
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentService.write(missionId, request)) ; 
