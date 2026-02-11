@@ -20,4 +20,9 @@ public interface MissionRepository extends JpaRepository<MissionEntity, Integer>
             String userId,
             LocalDate endDate,
             LocalDate startDate);
+
+        List<MissionEntity> findByStatus_StatusNameAndMissionStartDateLessThanEqualAndMissionEndDateGreaterThanEqual(
+            String statusName,
+            LocalDate endDate,
+            LocalDate startDate);
 }

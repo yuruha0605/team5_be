@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class MissionLogService {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
     private static final String STATUS_COMPLETED_NAME = "완료";
+        private static final int STATUS_FAILED_ID = 4;
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
     private static final String MODE_SELF_SELECT_NAME = "자율 선택";
 
@@ -61,6 +62,7 @@ public class MissionLogService {
 
         if (Boolean.TRUE.equals(saved.getIsChecked())
                 && isCompletionTargetMode(mission)
+                                && !isFailedStatus(mission)
                 && !saved.getCheckDate().isBefore(mission.getMissionEndDate())) {
             markMissionCompleted(mission);
         }
@@ -91,6 +93,13 @@ public class MissionLogService {
         String modeName = mission.getMode().getModeName();
         return MODE_LEVEL_UP_NAME.equals(modeName) || MODE_SELF_SELECT_NAME.equals(modeName);
     }
+
+
+
+        private boolean isFailedStatus(MissionEntity mission) {
+                StatusEntity status = mission.getStatus();
+                return status != null && STATUS_FAILED_ID == status.getStatusId();
+        }
 
 
 
