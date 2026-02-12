@@ -12,6 +12,7 @@ import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.missionlog.dao.MissionLogRepository;
 import com.example.team5_be.missionlog.domain.entity.MissionLogEntity;
 import com.example.team5_be.mypage.domain.dto.HabitProgressDTO;
+import com.example.team5_be.mypage.domain.dto.MonthlyReportDTO;
 import com.example.team5_be.mypage.domain.dto.ReportDTO;
 
 import java.time.LocalDate;
@@ -28,92 +29,43 @@ public class MyPageService {
     private final MissionRepository missionRepo;
     private final MissionLogRepository missionLogRepo;
 
-    public ReportDTO getReport(String userId, YearMonth month) {
-        LocalDate today = LocalDate.now();
-
-       
-        // 전체 Mission 조회 (Habit별 그룹핑)
+    // 누적/총 현황
+    public ReportDTO getOverallStats(String userId) {
         List<MissionEntity> allMissions = missionRepo.findByUser_UserId(userId);
 
-        Map<Integer, List<MissionEntity>> habitMissionMap = allMissions.stream()
-                .collect(Collectors.groupingBy(m -> m.getHabit().getHabitId()));
-
-        // 이번 달 MissionLog 조회
-        LocalDate monthStart = month.atDay(1);
-        LocalDate monthEnd = month.atEndOfMonth();
-
-        List<MissionLogEntity> monthLogs = missionLogRepo
-                .findByMission_MissionIdInAndCheckDateBetween(
-                        allMissions.stream().map(MissionEntity::getMissionId).toList(),
-                        monthStart, monthEnd
-                )
-                .stream()
-                .filter(log -> Boolean.TRUE.equals(log.getIsChecked())) // null 대비
-                .toList();
-
-
-        // Habit별 진행률 계산 (이번 달 일일로그 완료 횟수 기준, 한달 진행률)
-        int daysInMonth = month.lengthOfMonth();
-
-        // Habit별 진행률 계산 (MissionLog 기준 월 진행률)
-        List<HabitProgressDTO> habitProgressList = habitMissionMap.entrySet().stream()
-                .map(entry -> {
-                        Integer habitId = entry.getKey();
-                        List<MissionEntity> missions = entry.getValue();
-
-                        // 이 Habit에 속한 missionId들
-                        Set<Integer> missionIds = missions.stream()
-                                .map(MissionEntity::getMissionId)
-                                .collect(Collectors.toSet());
-
-                        // 해당 Habit의 이번 달 성공 날짜들 (중복 제거)
-                        long successDays = monthLogs.stream()
-                                .filter(log -> missionIds.contains(log.getMission().getMissionId()))
-                                .map(MissionLogEntity::getCheckDate)
-                                .distinct()   // ⭐ 하루 1번만 카운트
-                                .count();
-
-                        double progress = (double) successDays / daysInMonth;
-
-                        String habitName = missions.get(0).getHabit().getHabitName();
-
-                        return new HabitProgressDTO(habitId, habitName, progress);
-                })
-                .toList();
-        
-        // 이번 달 태그별 완료 미션 수
-        Map<String, Long> monthTagCounts = monthLogs.stream()
-                .map(log -> log.getMission().getHabit())
-                .filter(Objects::nonNull)
-                .map(HabitEntity::getTag)
-                .filter(Objects::nonNull)
-                .map(TagEntity::getTagName)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        //총 완료 미션 수 
         long completedMissions = allMissions.stream()
-                .filter(m -> m.getStatus() != null &&
-                     Integer.valueOf(3).equals(m.getStatus().getStatusId()))
+                .filter(m -> m.getStatus() != null && Integer.valueOf(3).equals(m.getStatus().getStatusId()))
                 .count();
-                
-        // 전체 태그별 Mission 수
+
         Map<String, Long> totalTagCounts = allMissions.stream()
                 .map(MissionEntity::getHabit)
                 .filter(Objects::nonNull)
-                .map(HabitEntity::getTag)
+                .map(h -> h.getTag())
                 .filter(Objects::nonNull)
-                .map(TagEntity::getTagName)
+                .map(tag -> tag.getTagName())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+        // 연속 성공일수
+        List<Integer> allMissionIds = allMissions.stream()
+                .map(MissionEntity::getMissionId)
+                .toList();
 
-        // 연속 성공일수 (오늘 기준)
-        List<LocalDate> successDates = monthLogs.stream()
+        List<LocalDate> successDates = missionLogRepo
+                .findByMission_MissionIdInAndCheckDateBetween(
+                        allMissionIds,
+                        LocalDate.of(2000,1,1), // 아주 오래전부터
+                        LocalDate.now()
+                )
+                .stream()
+                .filter(log -> Boolean.TRUE.equals(log.getIsChecked())) // 성공 필터링
                 .map(MissionLogEntity::getCheckDate)
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .toList();
 
         int consecutiveDays = 0;
+        LocalDate today = LocalDate.now();
+
         if (!successDates.isEmpty() && successDates.get(0).equals(today)) {
             consecutiveDays = 1;
             LocalDate prevDate = today;
@@ -126,14 +78,71 @@ public class MyPageService {
             }
         }
 
-
-        // DTO 생성
         return ReportDTO.builder()
-                .consecutiveSuccessDays(consecutiveDays)
-                .monthTagCounts(monthTagCounts)
                 .completedMissions((int) completedMissions)
                 .totalTagCounts(totalTagCounts)
-                .habitProgressList(habitProgressList)
+                .consecutiveSuccessDays(consecutiveDays)
                 .build();
-    }
+        }
+
+        // MonthlyReport
+        public MonthlyReportDTO getMonthlyReport(String userId, YearMonth month) {
+                LocalDate monthStart = month.atDay(1);
+                LocalDate monthEnd = month.atEndOfMonth();
+
+                List<MissionEntity> allMissions = missionRepo.findByUser_UserId(userId);
+
+                Map<Integer, List<MissionEntity>> habitMissionMap = allMissions.stream()
+                        .collect(Collectors.groupingBy(m -> m.getHabit().getHabitId()));
+
+                List<Integer> missionIds = allMissions.stream()
+                        .map(MissionEntity::getMissionId)
+                        .toList();
+
+                List<MissionLogEntity> monthLogs = missionLogRepo
+                        .findByMission_MissionIdInAndCheckDateBetween(
+                                missionIds,
+                                monthStart,
+                                monthEnd
+                        )
+                        .stream()
+                        .filter(log -> Boolean.TRUE.equals(log.getIsChecked())) // 성공 로그만
+                        .toList();
+
+                int daysInMonth = month.lengthOfMonth();
+
+                List<HabitProgressDTO> habitProgressList = habitMissionMap.entrySet().stream()
+                        .map(entry -> {
+                        Integer habitId = entry.getKey();
+                        List<MissionEntity> missions = entry.getValue();
+
+                        Set<Integer> ids = missions.stream()
+                                .map(MissionEntity::getMissionId)
+                                .collect(Collectors.toSet());
+
+                        long successDays = monthLogs.stream()
+                                .filter(log -> ids.contains(log.getMission().getMissionId()))
+                                .map(MissionLogEntity::getCheckDate)
+                                .distinct()
+                                .count();
+
+                        double progress = (double) successDays / daysInMonth;
+                        String habitName = missions.get(0).getHabit().getHabitName();
+                        return new HabitProgressDTO(habitId, habitName, progress);
+                        })
+                        .toList();
+
+                Map<String, Long> monthTagCounts = monthLogs.stream()
+                        .map(log -> log.getMission().getHabit())
+                        .filter(Objects::nonNull)
+                        .map(HabitEntity::getTag)
+                        .filter(Objects::nonNull)
+                        .map(TagEntity::getTagName)
+                        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+                return MonthlyReportDTO.builder()
+                        .habitProgressList(habitProgressList)
+                        .monthTagCounts(monthTagCounts)
+                        .build();
+        }
 }

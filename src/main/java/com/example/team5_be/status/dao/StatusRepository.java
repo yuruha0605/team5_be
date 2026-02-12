@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.example.team5_be.status.domain.entity.StatusEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface StatusRepository extends JpaRepository<StatusEntity, Integer> {
     Optional<StatusEntity> findByStatusName(String statusName);
+
+    List<StatusEntity> findByStatusNameContainingIgnoreCaseOrderByStatusIdAsc(String keyword);
 }

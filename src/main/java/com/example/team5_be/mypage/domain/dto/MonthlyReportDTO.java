@@ -14,10 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportDTO {
-
-    private int consecutiveSuccessDays;           // 연속 성공일수
-    private int completedMissions;                // 총 미션 중 완료된 개수
-    private Map<String, Long> totalTagCounts;     // 총 진행한 습관 기준 태그
-
+public class MonthlyReportDTO {
+    private Map<String, Long> monthTagCounts;
+    private List<HabitProgressDTO> habitProgressList;
 }
