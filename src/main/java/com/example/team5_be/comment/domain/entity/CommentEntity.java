@@ -35,9 +35,6 @@ public class CommentEntity {
     @Column(name = "comment_id")
     private Integer commentId ; 
 
-    @Column(name = "title", nullable = false , length = 150)
-    private String title;
-
     @Column(name = "content", nullable = false , length = 500)
     private String content ;
 
@@ -69,8 +66,7 @@ public class CommentEntity {
 
     
 
-    public void update(String title, String content) {
-        this.title = title;
+    public void update(String content) {
         this.content = content;
     }
 }

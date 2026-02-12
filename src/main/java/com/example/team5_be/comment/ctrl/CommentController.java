@@ -94,7 +94,6 @@ public class CommentController {
 
         System.out.println(">>>> mission / comment  ctrl path : /write"); 
         System.out.println(">>>> params : "+ request); 
-        System.out.println(">>>> title   : " + request.getTitle());
         System.out.println(">>>> content : " + request.getContent());
 
 

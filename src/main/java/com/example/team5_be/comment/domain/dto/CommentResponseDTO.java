@@ -17,7 +17,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CommentResponseDTO {
     private Integer commentId;
-    private String title;
     private String content;
     private Integer missionId;
     private String userId;
@@ -28,7 +27,6 @@ public class CommentResponseDTO {
     public static CommentResponseDTO fromEntity(CommentEntity entity) {
         return CommentResponseDTO.builder()
                 .commentId(entity.getCommentId())
-                .title(entity.getTitle())
                 .content(entity.getContent())
                 .createAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

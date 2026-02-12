@@ -16,14 +16,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequestDTO {
-    private String title;
     private String content;
 
 
 
     public CommentEntity toEntity(MissionEntity mission, UserEntity user) {
         return CommentEntity.builder()
-                    .title(title)
                     .content(content)
                     .mission(mission)
                     .user(user)

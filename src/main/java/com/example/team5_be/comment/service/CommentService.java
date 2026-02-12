@@ -39,8 +39,6 @@ public class CommentService {
         String userId = getAuthUserId();
         UserEntity user = userRepository.findByUserId(userId)
             .orElseThrow(() -> new EntityNotFoundException("User not found : " + userId));
-        commentRepository.save(request.toEntity(mission, user));
-
         CommentEntity saved = commentRepository.save(request.toEntity(mission, user));
 
         System.out.println(">>>> saved commentId   : " + saved.getCommentId());
@@ -74,7 +72,7 @@ public class CommentService {
         CommentEntity comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new EntityNotFoundException("게시글 없음"));
 
-        comment.update(request.getTitle(), request.getContent());
+        comment.update(request.getContent());
 
         String userId = getAuthUserId();
         if (!comment.getUser().getUserId().equals(userId)) {
