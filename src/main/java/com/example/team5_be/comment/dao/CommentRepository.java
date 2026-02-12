@@ -9,4 +9,6 @@ import com.example.team5_be.comment.domain.entity.CommentEntity;
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer>{
     public List<CommentEntity> findByMission_MissionId(Integer missionId);
 
+    void deleteByMission_MissionId(Integer missionId);
+
 }

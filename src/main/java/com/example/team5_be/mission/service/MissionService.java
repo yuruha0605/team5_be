@@ -9,10 +9,12 @@ import com.example.team5_be.habit.dao.HabitRepository;
 import com.example.team5_be.habit.domain.entity.HabitEntity;
 import com.example.team5_be.level.dao.LevelRepository;
 import com.example.team5_be.level.domain.entity.LevelEntity;
+import com.example.team5_be.comment.dao.CommentRepository;
 import com.example.team5_be.mission.dao.MissionRepository;
 import com.example.team5_be.mission.domain.dto.MissionRequestDTO;
 import com.example.team5_be.mission.domain.dto.MissionResponseDTO;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.missionlog.dao.MissionLogRepository;
 import com.example.team5_be.mode.dao.ModeRepository;
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 import com.example.team5_be.status.dao.StatusRepository;
@@ -33,6 +35,8 @@ public class MissionService {
     private final StatusRepository statusRepository;
     private final HabitRepository habitRepository;
     private final UserRepository userRepository;
+    private final MissionLogRepository missionLogRepository;
+    private final CommentRepository commentRepository;
 
     private static final int LEVEL_UP_DAYS = 60;
     private static final String STATUS_IN_PROGRESS_NAME = "진행중";
@@ -181,6 +185,9 @@ public class MissionService {
         MissionEntity entity = missionRepository.findByMissionIdAndUser_UserId(missionId, userId)
                 .orElseThrow(() -> new RuntimeException("read fail"));
 
+        // Remove dependent rows first to satisfy FK constraints.
+        missionLogRepository.deleteByMission_MissionId(entity.getMissionId());
+        commentRepository.deleteByMission_MissionId(entity.getMissionId());
         missionRepository.deleteById(entity.getMissionId());
         return true;
     }
