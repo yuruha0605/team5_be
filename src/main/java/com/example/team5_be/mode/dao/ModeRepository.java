@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.example.team5_be.mode.domain.entity.ModeEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ModeRepository extends JpaRepository<ModeEntity, Integer> {
     Optional<ModeEntity> findByModeName(String modeName);
+
+    List<ModeEntity> findByModeNameContainingIgnoreCaseOrderByModeIdAsc(String keyword);
 }
