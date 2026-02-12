@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,13 +44,13 @@ public class MissionLogService {
 public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
     MissionEntity mission = missionRepository.findById(request.getMissionId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid missionId: " + request.getMissionId()));
-    validateCheckDate(request, mission);
+    LocalDate checkDate = resolveCheckDate(request, mission);
 
     MissionLogEntity entity = missionLogRepository
-            .findByMission_MissionIdAndCheckDate(request.getMissionId(), request.getCheckDate())
+            .findByMission_MissionIdAndCheckDate(request.getMissionId(), checkDate)
             .orElseGet(() -> MissionLogEntity.builder()
                     .mission(mission)
-                    .checkDate(request.getCheckDate())
+                    .checkDate(checkDate)
                     .build());
 
     entity.setIsChecked(request.getIsChecked());
@@ -78,21 +79,31 @@ public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
 }
 
 
-    private void validateCheckDate(MissionLogRequestDTO request, MissionEntity mission) {
-        LocalDate checkDate = request.getCheckDate();
-        if (checkDate == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "checkDate is required");
-        }
+        private LocalDate resolveCheckDate(MissionLogRequestDTO request, MissionEntity mission) {
+                LocalDate checkDate = request.getCheckDate();
+                if (checkDate == null) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "checkDate is required");
+                }
 
-        LocalDate startDate = mission.getMissionStartDate();
-        LocalDate endDate = mission.getMissionEndDate();
+                LocalDate startDate = mission.getMissionStartDate();
+                LocalDate endDate = mission.getMissionEndDate();
 
-        if (checkDate.isBefore(startDate) || checkDate.isAfter(endDate)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "checkDate is outside mission period");
+                if (checkDate.isBefore(startDate) || checkDate.isAfter(endDate)) {
+                        LocalDate today = LocalDate.now();
+                        long gapDays = Math.abs(ChronoUnit.DAYS.between(checkDate, today));
+
+                        // If the client date is off by a day (timezone/ISO conversion), normalize to today
+                        if (gapDays <= 1 && !today.isBefore(startDate) && !today.isAfter(endDate)) {
+                                return today;
+                        }
+
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "checkDate is outside mission period");
+                }
+
+                return checkDate;
         }
-    }
 
 
 
