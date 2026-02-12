@@ -35,7 +35,7 @@ public class MissionService {
     private final UserRepository userRepository;
 
     private static final int LEVEL_UP_DAYS = 60;
-    private static final String STATUS_IN_PROGRESS_NAME = "진행 중";
+    private static final String STATUS_IN_PROGRESS_NAME = "진행중";
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
     private static final String LEVEL_UP_DEFAULT_LEVEL_NAME = "레벨 1";
 

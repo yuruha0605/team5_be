@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MissionFailureScheduler {
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
-    private static final String STATUS_IN_PROGRESS_NAME = "진행 중";
+    private static final String STATUS_IN_PROGRESS_NAME = "진행중";
     private static final String STATUS_COMPLETED_NAME = "완료";
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
     private static final String MODE_SELF_SELECT_NAME = "자율 선택";
