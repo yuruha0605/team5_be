@@ -97,6 +97,7 @@ public class CommentController {
         System.out.println(">>>> title   : " + request.getTitle());
         System.out.println(">>>> content : " + request.getContent());
 
+
         if (authentication == null || authentication.getName() == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

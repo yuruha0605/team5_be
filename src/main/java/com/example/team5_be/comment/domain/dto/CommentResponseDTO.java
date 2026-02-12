@@ -1,5 +1,7 @@
 package com.example.team5_be.comment.domain.dto;
 
+import java.time.LocalDateTime;
+
 import com.example.team5_be.comment.domain.entity.CommentEntity;
 
 import lombok.AllArgsConstructor;
@@ -19,12 +21,14 @@ public class CommentResponseDTO {
     private String content;
     private Integer missionId;
     private String userId;
+    private LocalDateTime commentDate;
 
     public static CommentResponseDTO fromEntity(CommentEntity entity) {
         return CommentResponseDTO.builder()
                 .commentId(entity.getCommentId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
+                .commentDate(entity.getCommentDate())
                 .missionId(entity.getMission().getMissionId())
                 .userId(entity.getUser().getUserId())
                 .build();

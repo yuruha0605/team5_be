@@ -30,15 +30,17 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public List<CommentResponseDTO> write(Integer missonId, CommentRequestDTO request){
+    public List<CommentResponseDTO> write(Integer missionId, CommentRequestDTO request){
         System.out.println(">>>> mission/comment service write");        //디버그
+
+
         
-        
-        MissionEntity mission = missionRepository.findById(missonId)
+        MissionEntity mission = missionRepository.findById(missionId)
             .orElseThrow(() -> new EntityNotFoundException("Mission not found"));
 
 
         String userId = getAuthUserId();
+
     
         UserEntity user = userRepository.findByUserId(userId)
             .orElseThrow(() -> new EntityNotFoundException("User not found : " + userId));
@@ -46,7 +48,12 @@ public class CommentService {
         commentRepository.save(request.toEntity(mission, user));
 
 
-        return commentRepository.findByMission_MissionId(missonId)
+        CommentEntity saved = commentRepository.save(request.toEntity(mission, user));
+
+        System.out.println(">>>> saved commentId   : " + saved.getCommentId());
+        System.out.println(">>>> saved commentDate : " + saved.getCommentDate());
+
+        return commentRepository.findByMission_MissionId(missionId)
                 .stream()
                 .map(CommentResponseDTO::fromEntity)
                 .toList();

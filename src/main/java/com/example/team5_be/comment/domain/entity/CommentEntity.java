@@ -1,5 +1,7 @@
 package com.example.team5_be.comment.domain.entity;
 
+import java.time.LocalDateTime;
+
 import com.example.team5_be.mission.domain.entity.MissionEntity;
 import com.example.team5_be.user.domain.entity.UserEntity;
 
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +38,15 @@ public class CommentEntity {
     private String title;
 
     @Column(name = "content", nullable = false , length = 500)
-    private String content ; 
+    private String content ;
+
+    @Column(name = "comment_date", nullable = false, updatable = false)
+    private LocalDateTime commentDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.commentDate = LocalDateTime.now();
+}
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mission_id")
