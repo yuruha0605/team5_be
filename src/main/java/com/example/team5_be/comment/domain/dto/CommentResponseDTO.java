@@ -21,14 +21,17 @@ public class CommentResponseDTO {
     private String content;
     private Integer missionId;
     private String userId;
-    private LocalDateTime commentDate;
+    private LocalDateTime createAt;
+    private LocalDateTime updatedAt;
+
 
     public static CommentResponseDTO fromEntity(CommentEntity entity) {
         return CommentResponseDTO.builder()
                 .commentId(entity.getCommentId())
                 .title(entity.getTitle())
                 .content(entity.getContent())
-                .commentDate(entity.getCommentDate())
+                .createAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .missionId(entity.getMission().getMissionId())
                 .userId(entity.getUser().getUserId())
                 .build();

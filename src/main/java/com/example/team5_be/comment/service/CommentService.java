@@ -29,39 +29,30 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
+    //작성
     @Transactional
     public List<CommentResponseDTO> write(Integer missionId, CommentRequestDTO request){
         System.out.println(">>>> mission/comment service write");        //디버그
-
-
-        
         MissionEntity mission = missionRepository.findById(missionId)
             .orElseThrow(() -> new EntityNotFoundException("Mission not found"));
 
-
         String userId = getAuthUserId();
-
-    
         UserEntity user = userRepository.findByUserId(userId)
             .orElseThrow(() -> new EntityNotFoundException("User not found : " + userId));
-
         commentRepository.save(request.toEntity(mission, user));
-
 
         CommentEntity saved = commentRepository.save(request.toEntity(mission, user));
 
         System.out.println(">>>> saved commentId   : " + saved.getCommentId());
-        System.out.println(">>>> saved commentDate : " + saved.getCommentDate());
+        System.out.println(">>>> saved commentDate : " + saved.getCreatedAt());
 
         return commentRepository.findByMission_MissionId(missionId)
                 .stream()
                 .map(CommentResponseDTO::fromEntity)
                 .toList();
-
-        
     }
 
-
+    //삭제
     @Transactional
     public void delete(Integer commentId) {
         System.out.println(">>>> mission/comment service delete");
@@ -76,6 +67,7 @@ public class CommentService {
     }
 
 
+    //수정
     @Transactional
     public CommentResponseDTO update(Integer commentId, CommentRequestDTO request){
         System.out.println(">>>> comment service update");  
@@ -93,6 +85,7 @@ public class CommentService {
     }
 
 
+    //조회
     @Transactional(readOnly = true)
     public List<CommentResponseDTO> read(Integer missionId) {
         System.out.println(">>>> comment service read"); 
@@ -107,7 +100,6 @@ public class CommentService {
     
 
 
-    //고민
     private String getAuthUserId() {
         return SecurityContextHolder
                 .getContext()
