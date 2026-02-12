@@ -115,7 +115,7 @@ public class MissionFailureScheduler {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + downgradedLevelId));
 
         LocalDate newStartDate = today;
-        LocalDate newEndDate = newStartDate.plusDays(downgradedLevel.getLevelDate());
+        LocalDate newEndDate = newStartDate.plusDays(Math.max(downgradedLevel.getLevelDate(), 1) - 1L);
 
         MissionEntity updated = MissionEntity.builder()
                 .missionId(mission.getMissionId())
@@ -206,8 +206,8 @@ public class MissionFailureScheduler {
         LevelEntity upgradedLevel = levelRepository.findById(upgradedLevelId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + upgradedLevelId));
 
-        LocalDate newStartDate = today;
-        LocalDate newEndDate = newStartDate.plusDays(upgradedLevel.getLevelDate());
+        LocalDate newStartDate = mission.getMissionStartDate();
+        LocalDate newEndDate = newStartDate.plusDays(Math.max(upgradedLevel.getLevelDate(), 1) - 1L);
 
         MissionEntity updated = MissionEntity.builder()
                 .missionId(mission.getMissionId())

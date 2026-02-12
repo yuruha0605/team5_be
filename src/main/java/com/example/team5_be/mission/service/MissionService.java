@@ -38,7 +38,6 @@ public class MissionService {
     private final MissionLogRepository missionLogRepository;
     private final CommentRepository commentRepository;
 
-    private static final int LEVEL_UP_DAYS = 60;
     private static final String STATUS_IN_PROGRESS_NAME = "진행중";
     private static final String MODE_LEVEL_UP_NAME = "레벨업";
     private static final String LEVEL_UP_DEFAULT_LEVEL_NAME = "레벨 1";
@@ -76,14 +75,10 @@ public class MissionService {
         LocalDate startDate = LocalDate.now();
 
         LocalDate endDate;
-        if (MODE_LEVEL_UP_NAME.equals(mode.getModeName())) {
-            endDate = startDate.plusDays(LEVEL_UP_DAYS);
-        } else {
-            if (level.getLevelDate() == null) {
-                throw new IllegalArgumentException("Level duration is missing for levelId: " + request.getLevelId());
-            }
-            endDate = startDate.plusDays(level.getLevelDate());
+        if (level.getLevelDate() == null) {
+            throw new IllegalArgumentException("Level duration is missing for levelId: " + request.getLevelId());
         }
+        endDate = startDate.plusDays(Math.max(level.getLevelDate(), 1) - 1L);
 
         MissionEntity entity = missionRepository.save(
                                     MissionEntity.builder()
@@ -155,7 +150,7 @@ public class MissionService {
             LevelEntity newLevel = levelRepository.findById(request.getLevelId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid levelId: " + request.getLevelId()));
             level = newLevel;
-            endDate = entity.getMissionStartDate().plusDays(newLevel.getLevelDate());
+            endDate = entity.getMissionStartDate().plusDays(Math.max(newLevel.getLevelDate(), 1) - 1L);
         }
 
         MissionEntity updated = MissionEntity.builder()
