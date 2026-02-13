@@ -36,9 +36,24 @@ public class OpenAIService {
     private final HabitRepository habitRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final org.springframework.data.redis.core.RedisTemplate<String, String> redisTemplate;
 
     // 1. 회원가입 시 습관/미션 추천
     public HabitRecommendationResponseDTO recommendHabitAndMission(String userId) {
+
+        // ===== 캐시 확인 =====
+        String cacheKey = "ai:habit:recommend:" + userId;
+        try {
+            String cached = redisTemplate.opsForValue().get(cacheKey);
+            if (cached != null) {
+                System.out.println(">>>> 캐시에서 습관 추천 반환: " + userId);
+                return objectMapper.readValue(cached, HabitRecommendationResponseDTO.class);
+            }
+        } catch (Exception e) {
+            System.out.println(">>>> Redis 조회 실패, GPT 직접 호출: " + e.getMessage());
+        }
+        // ====================
+
         UserEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
@@ -74,67 +89,106 @@ public class OpenAIService {
         );
 
         String gptResponse = callGPT(prompt);
-        return parseHabitRecommendation(gptResponse);
+        HabitRecommendationResponseDTO result = parseHabitRecommendation(gptResponse);  // ← 변수에 담기!
+
+        // ===== 캐시 저장 (24시간) =====
+        try {
+            String json = objectMapper.writeValueAsString(result);
+            redisTemplate.opsForValue().set(cacheKey, json,
+                java.time.Duration.ofHours(24));
+            System.out.println(">>>> 습관 추천 캐시 저장 완료: " + userId);
+        } catch (Exception e) {
+            System.out.println(">>>> Redis 저장 실패 (무시): " + e.getMessage());
+        }
+        // ==============================
+
+        return result;
     }
 
-    // 2. 특정 습관의 미션 추천
-    public MissionRecommendationResponseDTO recommendMission(Integer habitId, String userId) {
-        HabitEntity habit = habitRepository.findById(habitId)
-            .orElseThrow(() -> new EntityNotFoundException("Habit not found: " + habitId));
+// 2. 특정 습관의 미션 추천
+public MissionRecommendationResponseDTO recommendMission(Integer habitId, String userId) {
 
-        UserEntity user = userRepository.findById(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-
-        String prompt = String.format(
-            "습관 정보:\n" +
-            "- 습관명: %s\n" +
-            "- 설명: %s\n\n" +
-            "사용자 정보:\n" +
-            "- 직업: %s\n" +
-            "- 관심사: %s\n\n" +
-            "이 습관에 적합한 미션 5개를 추천해주세요.\n" +
-            "응답은 반드시 아래 JSON 형식으로만 작성해주세요:\n\n" +
-            "{\n" +
-            "  \"missions\": [\n" +
-            "    {\n" +
-            "      \"missionName\": \"미션 이름\",\n" +
-            "      \"missionDefinition\": \"미션 설명\",\n" +
-            "      \"levelName\": \"3일\"\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}\n\n" +
-            "levelName은 \"1일\", \"3일\", \"1주\", \"2주\", \"1달\", \"2달\" 중 하나",
-            habit.getHabitName(),
-            habit.getHabitDefinition(),
-            user.getUserJob(),
-            user.getUserInterest()
-        );
-
-        String gptResponse = callGPT(prompt);
-        Map<String, Object> parsed = parseJSON(gptResponse);
-        
-        @SuppressWarnings("unchecked")
-        List<Map<String, String>> missionList = (List<Map<String, String>>) parsed.get("missions");
-        
-        List<MissionRecommendationResponseDTO.Mission> missions = missionList.stream()
-            .map(m -> MissionRecommendationResponseDTO.Mission.builder()
-                .missionName(m.get("missionName"))
-                .missionDefinition(m.get("missionDefinition"))
-                .levelName(m.get("levelName"))
-                .build())
-            .toList();
-
-        return MissionRecommendationResponseDTO.builder()
-            .habitId(habitId)
-            .habitName(habit.getHabitName())
-            .missions(missions)
-            .build();
+    // ===== 캐시 확인 =====
+    String cacheKey = "ai:mission:recommend:" + habitId + ":" + userId;
+    try {
+        String cached = redisTemplate.opsForValue().get(cacheKey);
+        if (cached != null) {
+            System.out.println(">>>> 캐시에서 미션 추천 반환: habitId=" + habitId + ", userId=" + userId);
+            return objectMapper.readValue(cached, MissionRecommendationResponseDTO.class);
+        }
+    } catch (Exception e) {
+        System.out.println(">>>> Redis 조회 실패, GPT 직접 호출: " + e.getMessage());
     }
+    // ====================
 
+    HabitEntity habit = habitRepository.findById(habitId)
+        .orElseThrow(() -> new EntityNotFoundException("Habit not found: " + habitId));
+
+    UserEntity user = userRepository.findById(userId)
+        .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+    String prompt = String.format(
+        "습관 정보:\n" +
+        "- 습관명: %s\n" +
+        "- 설명: %s\n\n" +
+        "사용자 정보:\n" +
+        "- 직업: %s\n" +
+        "- 관심사: %s\n\n" +
+        "이 습관에 적합한 미션 5개를 추천해주세요.\n" +
+        "응답은 반드시 아래 JSON 형식으로만 작성해주세요:\n\n" +
+        "{\n" +
+        "  \"missions\": [\n" +
+        "    {\n" +
+        "      \"missionName\": \"미션 이름\",\n" +
+        "      \"missionDefinition\": \"미션 설명\",\n" +
+        "      \"levelName\": \"3일\"\n" +
+        "    }\n" +
+        "  ]\n" +
+        "}\n\n" +
+        "levelName은 \"1일\", \"3일\", \"1주\", \"2주\", \"1달\", \"2달\" 중 하나",
+        habit.getHabitName(),
+        habit.getHabitDefinition(),
+        user.getUserJob(),
+        user.getUserInterest()
+    );
+
+    String gptResponse = callGPT(prompt);
+    Map<String, Object> parsed = parseJSON(gptResponse);
+
+    @SuppressWarnings("unchecked")
+    List<Map<String, String>> missionList = (List<Map<String, String>>) parsed.get("missions");
+
+    List<MissionRecommendationResponseDTO.Mission> missions = missionList.stream()
+        .map(m -> MissionRecommendationResponseDTO.Mission.builder()
+            .missionName(m.get("missionName"))
+            .missionDefinition(m.get("missionDefinition"))
+            .levelName(m.get("levelName"))
+            .build())
+        .toList();
+
+    MissionRecommendationResponseDTO result = MissionRecommendationResponseDTO.builder()
+        .habitId(habitId)
+        .habitName(habit.getHabitName())
+        .missions(missions)
+        .build();
+
+    // ===== 캐시 저장 (12시간) =====
+    try {
+        String json = objectMapper.writeValueAsString(result);
+        redisTemplate.opsForValue().set(cacheKey, json,
+            java.time.Duration.ofHours(12));
+        System.out.println(">>>> 미션 추천 캐시 저장 완료: habitId=" + habitId + ", userId=" + userId);
+    } catch (Exception e) {
+        System.out.println(">>>> Redis 저장 실패 (무시): " + e.getMessage());
+    }
+    // ==============================
+
+    return result;
+}
     // 3. 응원 메시지 생성
     public String generateEncouragementMessage(String missionName, boolean isChecked) {
         String prompt;
-        
+
         if (isChecked) {
             prompt = String.format(
                 "미션 '%s'을(를) 성공적으로 완료했습니다.\n\n" +
@@ -156,9 +210,8 @@ public class OpenAIService {
         try {
             String gptResponse = callGPT(prompt);
             return gptResponse.trim()
-                .replaceAll("^[\"']|[\"']$", "");  // 앞뒤 따옴표 제거
+                .replaceAll("^[\"']|[\"']$", "");
         } catch (Exception e) {
-            // GPT 실패 시 기본 메시지
             return isChecked ? "멋져요! 계속 해봐요! 💪" : "괜찮아요, 내일 다시 도전! 🌟";
         }
     }
@@ -192,7 +245,6 @@ public class OpenAIService {
     // JSON 파싱
     private HabitRecommendationResponseDTO parseHabitRecommendation(String json) {
         try {
-            // JSON 마크다운 제거
             String cleaned = json.replaceAll("```json\\s*", "").replaceAll("```\\s*", "").trim();
             return objectMapper.readValue(cleaned, HabitRecommendationResponseDTO.class);
         } catch (Exception e) {
