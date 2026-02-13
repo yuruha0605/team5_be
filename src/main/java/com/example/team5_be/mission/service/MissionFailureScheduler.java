@@ -63,30 +63,53 @@ public class MissionFailureScheduler {
                         targetDate);
 
         for (MissionEntity mission : candidates) {
-            if (targetDate.equals(mission.getMissionEndDate())) {
-                if (allDaysChecked(mission)) {
-                    if (MODE_LEVEL_UP_NAME.equals(mission.getMode().getModeName())) {
-                        applyLevelUpUpgrade(mission, inProgress, completed, today, targetDate);
-                    } else if (MODE_SELF_SELECT_NAME.equals(mission.getMode().getModeName())) {
-                        applySelfSelectCompletion(mission, completed, targetDate);
-                    }
-                    continue;
-                }
+            processMissionForDateInternal(mission, targetDate, today, inProgress, completed, failed);
+        }
+    }
 
+    public void processMissionForDate(MissionEntity mission, LocalDate targetDate) {
+        if (mission == null || targetDate == null) {
+            return;
+        }
+
+        StatusEntity inProgress = statusRepository.findByStatusName(STATUS_IN_PROGRESS_NAME)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_IN_PROGRESS_NAME));
+
+        StatusEntity completed = statusRepository.findByStatusName(STATUS_COMPLETED_NAME)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid statusName: " + STATUS_COMPLETED_NAME));
+
+        StatusEntity failed = statusRepository.findById(STATUS_FAILED_ID)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid statusId: " + STATUS_FAILED_ID));
+
+        LocalDate today = targetDate.plusDays(1);
+        processMissionForDateInternal(mission, targetDate, today, inProgress, completed, failed);
+    }
+
+    private void processMissionForDateInternal(
+            MissionEntity mission,
+            LocalDate targetDate,
+            LocalDate today,
+            StatusEntity inProgress,
+            StatusEntity completed,
+            StatusEntity failed) {
+        if (mission.getStatus() == null
+                || !STATUS_IN_PROGRESS_NAME.equals(mission.getStatus().getStatusName())) {
+            return;
+        }
+
+        if (targetDate.isBefore(mission.getMissionStartDate())
+                || targetDate.isAfter(mission.getMissionEndDate())) {
+            return;
+        }
+
+        if (targetDate.equals(mission.getMissionEndDate())) {
+            if (allDaysChecked(mission)) {
                 if (MODE_LEVEL_UP_NAME.equals(mission.getMode().getModeName())) {
-                    applyLevelUpFailure(mission, inProgress, failed, today, targetDate);
+                    applyLevelUpUpgrade(mission, inProgress, completed, today, targetDate);
                 } else if (MODE_SELF_SELECT_NAME.equals(mission.getMode().getModeName())) {
-                    applySelfSelectFailure(mission, failed, targetDate);
+                    applySelfSelectCompletion(mission, completed, targetDate);
                 }
-                continue;
-            }
-
-            MissionLogEntity log = missionLogRepository
-                    .findByMission_MissionIdAndCheckDate(mission.getMissionId(), targetDate)
-                    .orElse(null);
-
-            if (log != null && Boolean.TRUE.equals(log.getIsChecked())) {
-                continue;
+                return;
             }
 
             if (MODE_LEVEL_UP_NAME.equals(mission.getMode().getModeName())) {
@@ -94,6 +117,21 @@ public class MissionFailureScheduler {
             } else if (MODE_SELF_SELECT_NAME.equals(mission.getMode().getModeName())) {
                 applySelfSelectFailure(mission, failed, targetDate);
             }
+            return;
+        }
+
+        MissionLogEntity log = missionLogRepository
+                .findByMission_MissionIdAndCheckDate(mission.getMissionId(), targetDate)
+                .orElse(null);
+
+        if (log != null && Boolean.TRUE.equals(log.getIsChecked())) {
+            return;
+        }
+
+        if (MODE_LEVEL_UP_NAME.equals(mission.getMode().getModeName())) {
+            applyLevelUpFailure(mission, inProgress, failed, today, targetDate);
+        } else if (MODE_SELF_SELECT_NAME.equals(mission.getMode().getModeName())) {
+            applySelfSelectFailure(mission, failed, targetDate);
         }
     }
 

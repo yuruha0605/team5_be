@@ -2,6 +2,7 @@ package com.example.team5_be.missionlog.service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.team5_be.mission.dao.MissionRepository;
 import com.example.team5_be.mission.domain.entity.MissionEntity;
+import com.example.team5_be.mission.service.MissionFailureScheduler;
 import com.example.team5_be.missionlog.dao.MissionLogRepository;
 import com.example.team5_be.missionlog.domain.dto.CalendarMonthResponseDTO;
 import com.example.team5_be.missionlog.domain.dto.DailyMissionItemDTO;
@@ -33,10 +35,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MissionLogService {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
-        private static final int STATUS_FAILED_ID = 4;
+                private static final int STATUS_FAILED_ID = 4;
+                private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
     private final MissionLogRepository missionLogRepository;
     private final MissionRepository missionRepository;
+        private final MissionFailureScheduler missionFailureScheduler;
     private final OpenAIService openAIService;
 
 
@@ -60,6 +64,11 @@ public MissionLogResponseDTO upsert(MissionLogRequestDTO request) {
     if (Boolean.TRUE.equals(saved.getIsChecked()) && !isFailedStatus(mission)) {
             // completion is handled by scheduler at midnight
     }
+
+        if (Boolean.TRUE.equals(saved.getIsChecked())
+                        && checkDate.isBefore(LocalDate.now(KOREA_ZONE))) {
+                missionFailureScheduler.processMissionForDate(mission, checkDate);
+        }
 
     // ========== AI 응원 메시지 생성 ==========
     String encouragement = openAIService.generateEncouragementMessage(
