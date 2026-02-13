@@ -92,9 +92,6 @@ public class MyPageService {
 
                 List<MissionEntity> allMissions = missionRepo.findByUser_UserId(userId);
 
-                Map<Integer, List<MissionEntity>> habitMissionMap = allMissions.stream()
-                        .collect(Collectors.groupingBy(m -> m.getHabit().getHabitId()));
-
                 List<Integer> missionIds = allMissions.stream()
                         .map(MissionEntity::getMissionId)
                         .toList();
@@ -111,26 +108,26 @@ public class MyPageService {
 
                 int daysInMonth = month.lengthOfMonth();
 
-                List<HabitProgressDTO> habitProgressList = habitMissionMap.entrySet().stream()
-                        .map(entry -> {
-                        Integer habitId = entry.getKey();
-                        List<MissionEntity> missions = entry.getValue();
+                List<HabitProgressDTO> habitProgressList = allMissions.stream()
+                        .map(mission -> {
 
-                        Set<Integer> ids = missions.stream()
-                                .map(MissionEntity::getMissionId)
-                                .collect(Collectors.toSet());
+                                long successDays = monthLogs.stream()
+                                        .filter(log -> log.getMission().getMissionId()
+                                                .equals(mission.getMissionId()))
+                                        .map(MissionLogEntity::getCheckDate)
+                                        .distinct()
+                                        .count();
 
-                        long successDays = monthLogs.stream()
-                                .filter(log -> ids.contains(log.getMission().getMissionId()))
-                                .map(MissionLogEntity::getCheckDate)
-                                .distinct()
-                                .count();
+                                double progress = (double) successDays / daysInMonth;
 
-                        double progress = (double) successDays / daysInMonth;
-                        String habitName = missions.get(0).getHabit().getHabitName();
-                        return new HabitProgressDTO(habitId, habitName, progress);
+                                return new HabitProgressDTO(
+                                        mission.getMissionId(),
+                                        mission.getMissionName(),
+                                        progress
+                                );
                         })
                         .toList();
+
 
                 Map<String, Long> monthTagCounts = monthLogs.stream()
                         .map(log -> log.getMission().getHabit())
